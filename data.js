@@ -18,10 +18,24 @@ const getTapgoData = () => {
         openLoc: false,
         lang: 'vi',
         openLang: false,
+        user: {
+            name: 'Gia Phát',
+            tier: 'Gold', // Silver, Gold, Platinum, Diamond
+            points: 1250,
+            nextTierPoints: 2000,
+            avatar: 'https://i.pravatar.cc/150?u=giaphat'
+        },
+        tiers: [
+            { id: 'Silver', name: 'Bạc', color: 'from-gray-300 to-gray-500', icon: 'medal', points: 0, benefits: ['Tích điểm 1%', 'Đổi voucher cơ bản'] },
+            { id: 'Gold', name: 'Vàng', color: 'from-amber-300 to-amber-500', icon: 'crown', points: 1000, benefits: ['Tích điểm 3%', 'Voucher độc quyền Gold', 'Ưu đãi sinh nhật'] },
+            { id: 'Platinum', name: 'Bạch Kim', color: 'from-slate-700 to-slate-900', icon: 'gem', points: 5000, benefits: ['Tích điểm 5%', 'Phòng chờ thương gia', 'Hotline hỗ trợ riêng'] },
+            { id: 'Diamond', name: 'Kim Cương', color: 'from-cyan-400 to-blue-600', icon: 'diamond', points: 20000, benefits: ['Tích điểm 10%', 'Sự kiện VIP Private', 'Quản lý tài khoản riêng'] }
+        ],
         changeLang(code) {
             this.lang = code;
             this.openLang = false;
         },
+
         cats: [
             { name: 'Tất cả', i: 'border-all', bg: 'bg-orange-50 text-brand' },
             { name: 'Vui chơi Giải trí', i: 'gamepad', bg: 'bg-pink-50 text-pink-500' },
