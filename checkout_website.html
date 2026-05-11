@@ -50,6 +50,15 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <!-- Lenis Smooth Scroll CSS -->
+    <style>
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+    </style>
 </head>
 
 <body x-data="{ ...getTapgoData(), step: 1, paymentMethod: 'tapcoin', qty: 1 }"
@@ -300,6 +309,17 @@
         <p class="text-xs text-gray-500">© 2026 <span class="inline-flex items-center bg-white px-2 py-0.5 rounded-md mx-1 translate-y-[1px]"><img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-3.5 w-auto object-contain"></span> Vietnam JSC. Mọi giao dịch được đảm bảo an toàn.</p>
     </footer>
 
+
+    <!-- Lenis Smooth Scroll JS -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
 </body>
 
 </html>
