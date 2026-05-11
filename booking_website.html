@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Bàn Trực Tuyến | TAPGO Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="data.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Be Vietnam Pro', 'sans-serif'] },
+                    colors: {
+                        brand: { DEFAULT: '#F48133', hover: '#E06B1F', bg: '#FFF3EB' },
+                        navy: { 900: '#0F172A', 800: '#1E293B' },
+                        tier: { gold: '#FBBF24' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        
+        body {
+            background-color: #F8FAFC;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-gray-200 rounded-full; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="text-gray-900 antialiased font-sans" x-data="{ ...getTapgoData(), selectedCity: 'Hà Nội', searchQuery: '', selectedDate: '15', selectedTime: '19:00', guests: 2, showChangeModal: false, days: [{ label: 'Thứ 2', day: '15', date: '15' }, { label: 'Thứ 3', day: '16', date: '16' }, { label: 'Thứ 4', day: '17', date: '17' }, { label: 'Thứ 5', day: '18', date: '18' }, { label: 'Thứ 6', day: '19', date: '19' }, { label: 'Thứ 7', day: '20', date: '20' }, { label: 'Chủ Nhật', day: '21', date: '21' }], lunchSlots: ['11:00', '11:30', '12:00', '12:30', '13:00', '13:30'], dinnerSlots: ['18:00', '18:30', '19:00', '19:30', '20:00', '20:30'], otherRestaurants: [{ name: 'Gogi House', loc: 'Giảng Võ, Hà Nội', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=200', rating: 4.8, type: 'Nướng Hàn', dist: '0.8km', price: '250k-500k', highlight: 'Dẻ sườn bò', city: 'Hà Nội' }, { name: 'Manwah Hotpot', loc: 'Lotte Liễu Giai', img: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=200', rating: 4.9, type: 'Lẩu Đài', dist: '1.2km', price: '350k-600k', highlight: 'Sốt Mala', city: 'Hà Nội' }, { name: 'Kichi Kichi', loc: 'Vincom Bà Triệu', img: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=200', rating: 4.7, type: 'Lẩu Băng', dist: '2.5km', price: '200k-400k', highlight: 'Bò Mỹ', city: 'Hà Nội' }], get filteredRestaurants() { return this.otherRestaurants.filter(r => (this.selectedCity === 'Toàn quốc' || r.city === this.selectedCity) && (r.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || r.type.toLowerCase().includes(this.searchQuery.toLowerCase()))); } }">
+
+    <div class="h-screen flex flex-col overflow-hidden relative" 
+        style="background: radial-gradient(at 0% 0%, rgba(244, 129, 51, 0.12) 0px, transparent 50%),
+                   radial-gradient(at 100% 0%, rgba(255, 180, 100, 0.08) 0px, transparent 50%),
+                   radial-gradient(at 100% 100%, rgba(244, 129, 51, 0.12) 0px, transparent 50%),
+                   radial-gradient(at 0% 100%, rgba(255, 120, 50, 0.05) 0px, transparent 50%),
+                   #FAFAFA;">
+        <!-- Abstract Background Accents -->
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
+            <div class="absolute -top-[10%] -left-[5%] w-[40%] h-[40%] bg-brand/10 blur-[120px] rounded-full animate-pulse" style="animation-duration: 8s"></div>
+            <div class="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-orange-200/20 blur-[100px] rounded-full"></div>
+            <div class="absolute -bottom-[10%] -right-[5%] w-[35%] h-[35%] bg-brand/10 blur-[120px] rounded-full animate-pulse" style="animation-duration: 10s"></div>
+        </div>
+
+        <!-- Compact Header -->
+        <header class="h-16 flex items-center shrink-0 border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 md:px-10 sticky top-0 z-50">
+            <div class="flex items-center gap-6 w-1/4">
+                <a href="home_website.html" class="group flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-brand group-hover:text-white transition-all duration-500 border border-gray-100/50 group-hover:border-transparent">
+                        <i class="fas fa-chevron-left text-[10px]"></i>
+                    </div>
+                    <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto">
+                </a>
+            </div>
+
+            <!-- Stepper Progress -->
+            <div class="flex-1 flex justify-center">
+                <div class="flex items-center gap-6 bg-gray-50/50 p-1.5 rounded-full border border-gray-100">
+                    <!-- Step 1 -->
+                    <div class="flex items-center gap-2.5 px-4 py-1.5 bg-white rounded-full border border-gray-100 shadow-sm">
+                        <span class="w-5 h-5 rounded-full bg-brand text-white text-[10px] flex items-center justify-center font-bold">1</span>
+                        <span class="text-[12px] font-bold text-navy-900 uppercase tracking-wide">Thông tin</span>
+                    </div>
+                    <!-- Connector -->
+                    <div class="w-6 h-px bg-gray-200"></div>
+                    <!-- Step 2 -->
+                    <div class="flex items-center gap-2.5 px-3 py-1.5 opacity-40">
+                        <span class="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px] flex items-center justify-center font-bold">2</span>
+                        <span class="text-[12px] font-bold text-gray-500 uppercase tracking-wide">Xác nhận</span>
+                    </div>
+                    <!-- Connector -->
+                    <div class="w-6 h-px bg-gray-200"></div>
+                    <!-- Step 3 -->
+                    <div class="flex items-center gap-2.5 px-3 py-1.5 opacity-40">
+                        <span class="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px] flex items-center justify-center font-bold">3</span>
+                        <span class="text-[12px] font-bold text-gray-500 uppercase tracking-wide">Hoàn tất</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-1/4 flex justify-end">
+                <div class="flex items-center gap-2 bg-brand-bg px-4 py-1.5 rounded-xl border border-brand/30 cursor-pointer hover:bg-brand hover:text-white group transition-all">
+                    <div class="w-7 h-7 rounded-lg bg-tier-gold flex items-center justify-center text-white shrink-0">
+                        <i class="fas fa-crown text-[10px]"></i>
+                    </div>
+                    <div class="flex flex-col group-hover:text-white">
+                        <span class="text-[9px] font-bold text-brand group-hover:text-white uppercase leading-none mb-0.5">Hạng Vàng</span>
+                        <span class="text-[14px] font-bold leading-tight text-gray-800 group-hover:text-white">1,250 Điểm</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 flex overflow-hidden">
+            <!-- Left: Selection Area -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30 p-6 md:p-8">
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <header class="pl-2 mb-2">
+                        <h1 class="text-[28px] font-bold text-navy-900 tracking-tight leading-none">Đặt bàn trực tuyến</h1>
+                        <p class="text-gray-400 text-[13px] font-medium mt-2">Vui lòng chọn thời gian và số lượng khách phù hợp.</p>
+                    </header>
+
+                    <!-- Main Selection Frame -->
+                    <div class="bg-white rounded-[2rem] border border-gray-100 shadow-[0_15px_40px_rgba(0,0,0,0.02)] p-8 md:p-10 space-y-8 relative overflow-hidden">
+                        <!-- Section 1: Date -->
+                        <section class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-brand rounded-full"></span> 01. Chọn ngày đến
+                                </h3>
+                                <button class="text-[11px] font-bold text-brand hover:underline flex items-center gap-1.5">
+                                    Tháng 5, 2024 <i class="fas fa-chevron-down text-[9px]"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                                <template x-for="day in days" :key="day.date">
+                                    <button @click="selectedDate = day.date" 
+                                        :class="selectedDate === day.date ? 'border-brand bg-brand-bg ring-1 ring-brand/20' : 'border-gray-50 bg-white hover:border-brand/30'"
+                                        class="h-16 flex flex-col items-center justify-center rounded-2xl border transition-all duration-300">
+                                        <span class="text-[9px] font-bold text-gray-400 uppercase mb-0.5" x-text="day.label"></span>
+                                        <span class="text-base font-bold text-navy-900" x-text="day.day"></span>
+                                    </button>
+                                </template>
+                            </div>
+                        </section>
+
+                        <!-- Section 2: Guests -->
+                        <section class="flex items-center justify-between py-2 border-b border-gray-50/50">
+                            <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand rounded-full"></span> 02. Số lượng khách
+                            </h3>
+                            <div class="flex items-center gap-4 bg-gray-50 p-1 rounded-xl border border-gray-100">
+                                <button @click="guests > 1 ? guests-- : null" class="w-8 h-8 rounded-lg bg-white text-gray-400 border border-gray-100 hover:text-brand hover:border-brand/30 transition-all flex items-center justify-center shadow-sm">
+                                    <i class="fas fa-minus text-[10px]"></i>
+                                </button>
+                                <div class="px-2 text-center min-w-[50px]">
+                                    <span class="text-[18px] font-bold text-navy-900" x-text="guests"></span>
+                                    <span class="text-[10px] font-bold text-gray-400 ml-0.5 uppercase">Người</span>
+                                </div>
+                                <button @click="guests++" class="w-8 h-8 rounded-lg bg-white text-gray-400 border border-gray-100 hover:text-brand hover:border-brand/30 transition-all flex items-center justify-center shadow-sm">
+                                    <i class="fas fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </section>
+
+                        <!-- Section 3: Time -->
+                        <section class="space-y-4">
+                            <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand rounded-full"></span> 03. Khung giờ
+                            </h3>
+                            <div class="space-y-5">
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-400 mb-2.5 uppercase flex items-center gap-2 opacity-60">
+                                        <i class="fas fa-sun text-brand/70 text-[9px]"></i> Buổi Trưa
+                                    </p>
+                                    <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
+                                        <template x-for="time in lunchSlots">
+                                            <button @click="selectedTime = time" 
+                                                :class="selectedTime === time ? 'border-brand bg-brand-bg ring-1 ring-brand/20' : 'border-gray-100 bg-white hover:border-brand/30'"
+                                                class="py-2 rounded-lg border text-[13px] font-semibold text-navy-900 transition-all text-center">
+                                                <span x-text="time"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-gray-400 mb-2.5 uppercase flex items-center gap-2 opacity-60">
+                                        <i class="fas fa-moon text-brand/70 text-[9px]"></i> Buổi Tối
+                                    </p>
+                                    <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
+                                        <template x-for="time in dinnerSlots">
+                                            <button @click="selectedTime = time" 
+                                                :class="selectedTime === time ? 'border-brand bg-brand-bg ring-1 ring-brand/20' : 'border-gray-100 bg-white hover:border-brand/30'"
+                                                class="py-2 rounded-lg border text-[13px] font-semibold text-navy-900 transition-all text-center">
+                                                <span x-text="time"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 4: Notes -->
+                        <section class="space-y-4">
+                            <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 bg-brand rounded-full"></span> 04. Ghi chú & Yêu cầu
+                            </h3>
+                            <textarea class="w-full bg-gray-50 border border-gray-100 focus:border-brand/30 focus:ring-4 focus:ring-brand/5 outline-none rounded-2xl py-4 px-6 text-[14px] font-medium text-navy-900 transition-all h-20 resize-none placeholder:text-gray-300" 
+                                placeholder="Vị trí bàn, tổ chức sự kiện, ghế trẻ em..."></textarea>
+                        </section>
+
+                        <!-- Benefits Card (Integrated inside frame) -->
+                        <div class="mt-2 p-5 rounded-[1.5rem] bg-navy-900 text-white relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 w-16 h-16 bg-brand/20 blur-2xl rounded-full"></div>
+                            <div class="relative z-10 flex items-center justify-between gap-6">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-bolt text-brand text-[10px]"></i>
+                                        <p class="text-[9px] font-bold text-brand uppercase tracking-widest">Ưu đãi độc quyền</p>
+                                    </div>
+                                    <h4 class="text-[14px] font-bold text-white">Giảm ngay <span class="text-brand">15%</span> tổng hóa đơn khi đặt bàn thành công</h4>
+                                </div>
+                                <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 shrink-0">
+                                    <i class="fas fa-gift text-lg text-brand/80"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Live Summary Panel -->
+            <div class="w-[380px] bg-white border-l border-gray-100 p-6 flex flex-col justify-between hidden lg:flex relative z-10">
+                <div class="space-y-6 overflow-y-auto custom-scrollbar pr-1">
+                    <!-- Restaurant Card -->
+                    <div class="p-4 rounded-[1.5rem] bg-gray-50/50 border border-gray-100 relative overflow-hidden group transition-all duration-500 hover:bg-white hover:border-brand/20">
+                        <div class="absolute -right-6 -top-6 w-20 h-20 bg-brand/5 rounded-full blur-2xl group-hover:bg-brand/10 transition-all"></div>
+                        <div class="flex items-center gap-3.5 relative z-10">
+                            <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-white shadow-sm shrink-0">
+                                <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=200" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start">
+                                    <div class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-orange-100 text-brand text-[7px] font-bold uppercase tracking-wider mb-1">
+                                        <i class="fas fa-crown mr-1"></i> Premium Partner
+                                    </div>
+                                    <button @click="showChangeModal = true" class="text-[9px] font-bold text-brand hover:underline flex items-center gap-1 -mt-0.5 outline-none">
+                                        <i class="fas fa-sync-alt"></i> Thay đổi
+                                    </button>
+                                </div>
+                                <h4 class="text-[15px] font-bold text-navy-900 truncate">Yakimono Restaurant</h4>
+                                <p class="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5">
+                                    <i class="fas fa-map-marker-alt text-brand/60"></i> 36 Nguyên Hồng, Hà Nội
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Receipt -->
+                    <div class="space-y-4 animate-fade-in" style="animation-delay: 0.2s">
+                        <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                            <h5 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Chi tiết lịch hẹn</h5>
+                            <span class="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 text-[8px]"><i class="fas fa-info"></i></span>
+                        </div>
+                        
+                        <div class="space-y-3.5">
+                            <div class="flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-50 text-brand flex items-center justify-center text-xs transition-transform group-hover:scale-110"><i class="fas fa-calendar-day"></i></div>
+                                    <span class="text-[12px] font-semibold text-gray-500">Ngày đến</span>
+                                </div>
+                                <span class="text-[13px] font-bold text-navy-900" x-text="selectedDate + ' Tháng 5, 2024'"></span>
+                            </div>
+                            <div class="flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center text-xs transition-transform group-hover:scale-110"><i class="fas fa-clock"></i></div>
+                                    <span class="text-[12px] font-semibold text-gray-500">Thời gian</span>
+                                </div>
+                                <span class="text-[13px] font-bold text-brand" x-text="selectedTime || '--:--'"></span>
+                            </div>
+                            <div class="flex items-center justify-between group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-green-50 text-green-500 flex items-center justify-center text-xs transition-transform group-hover:scale-110"><i class="fas fa-users"></i></div>
+                                    <span class="text-[12px] font-semibold text-gray-500">Số lượng</span>
+                                </div>
+                                <span class="text-[13px] font-bold text-navy-900" x-text="guests + ' Người'"></span>
+                            </div>
+                        </div>
+
+                        <!-- TapCoin Rewards -->
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-yellow-400/20 text-yellow-600 flex items-center justify-center"><i class="fas fa-coins text-xs"></i></div>
+                                <span class="text-[11px] font-bold text-gray-600">Tích lũy dự kiến</span>
+                            </div>
+                            <span class="text-[12px] font-bold text-yellow-600">+850 TC</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Action -->
+                <div class="pt-5 border-t border-gray-100 space-y-4">
+                    <a href="booking_confirm.html" class="w-full bg-brand text-white py-4 rounded-[1.5rem] font-bold text-[14px] hover:bg-brand-hover hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-brand/10">
+                        XÁC NHẬN ĐẶT BÀN <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                    
+                    <div class="flex items-center justify-between px-1">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] font-bold text-navy-900/40 uppercase tracking-tighter">Bảo mật giao dịch</span>
+                            <div class="flex items-center gap-1 mt-0.5">
+                                <i class="fas fa-shield-check text-green-500 text-[8px]"></i>
+                                <span class="text-[8px] font-semibold text-green-600 uppercase">Đã mã hóa</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-bold text-navy-900/40 uppercase tracking-tighter">Hotline hỗ trợ</span>
+                            <p class="text-[12px] font-bold text-navy-900 mt-0.5">1900 1234</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!-- Change Restaurant Modal Overlay -->
+    <div x-show="showChangeModal" x-cloak 
+        class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-navy-900/40 backdrop-blur-sm"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100">
+        
+        <div class="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden transform transition-all border border-white/50"
+            @click.away="showChangeModal = false"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-8 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100">
+            
+            <div class="px-6 py-5 border-b border-gray-50 bg-gray-50/30">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-navy-900 tracking-tight">Chọn nhà hàng khác</h3>
+                        <p class="text-gray-400 text-[11px] font-medium mt-0.5">Khám phá thiên đường ẩm thực quanh bạn</p>
+                    </div>
+                    <button @click="showChangeModal = false" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors">
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-0 bg-white border border-gray-100 rounded-2xl overflow-hidden focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/5 transition-all shadow-sm">
+                    <!-- City Selector -->
+                    <div class="relative shrink-0 border-r border-gray-100 h-10 flex items-center">
+                        <select x-model="selectedCity" class="bg-transparent pl-8 pr-6 py-2 text-[11px] font-bold text-navy-900 outline-none cursor-pointer appearance-none">
+                            <option value="Toàn quốc">Toàn quốc</option>
+                            <option value="Hà Nội">Hà Nội</option>
+                            <option value="Hồ Chí Minh">TP.HCM</option>
+                            <option value="Đà Nẵng">Đà Nẵng</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt absolute left-3.5 text-brand text-[10px]"></i>
+                        <i class="fas fa-chevron-down absolute right-2 text-gray-300 text-[7px] pointer-events-none"></i>
+                    </div>
+                    
+                    <!-- Search Input -->
+                    <div class="flex-1 relative h-10 flex items-center">
+                        <i class="fas fa-search absolute left-3.5 text-gray-300 text-[10px] group-focus-within:text-brand transition-colors"></i>
+                        <input type="text" x-model="searchQuery" placeholder="Tìm tên nhà hàng, món ăn..." 
+                            class="w-full bg-transparent py-2 pl-9 pr-4 rounded-xl text-[11px] outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4 space-y-2 max-h-[460px] overflow-y-auto custom-scrollbar">
+                <template x-for="res in filteredRestaurants" :key="res.name">
+                    <div class="flex items-center gap-3 p-2.5 rounded-2xl border border-gray-50 hover:border-brand/20 hover:bg-white hover:shadow-[0_8px_20px_rgba(244,129,51,0.06)] transition-all cursor-pointer group relative overflow-hidden">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden border border-gray-100 shrink-0 relative">
+                            <img :src="res.img" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute bottom-1 right-1 bg-black/50 backdrop-blur-md px-1 py-0.5 rounded-md border border-white/10">
+                                <span class="text-[7px] font-bold text-white flex items-center gap-0.5"><i class="fas fa-star text-yellow-400"></i> <span x-text="res.rating"></span></span>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-0.5">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="px-1 py-0.5 rounded bg-brand/10 text-brand text-[7px] font-bold uppercase" x-text="res.type"></span>
+                                    <span class="text-[8px] font-bold text-green-500 uppercase tracking-wider">• Đang mở</span>
+                                </div>
+                                <span class="text-[9px] font-bold text-gray-400" x-text="res.dist"></span>
+                            </div>
+                            <h4 class="text-[14px] font-bold text-navy-900 group-hover:text-brand transition-colors truncate" x-text="res.name"></h4>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <p class="text-[10px] text-gray-500 font-medium flex items-center gap-1">
+                                    <i class="fas fa-wallet text-brand/30 text-[9px]"></i> <span x-text="res.price"></span>
+                                </p>
+                                <span class="w-1 h-1 rounded-full bg-gray-200"></span>
+                                <p class="text-[10px] text-brand font-bold italic" x-text="'🔥 ' + res.highlight"></p>
+                            </div>
+                            <p class="text-[9px] text-gray-400 truncate mt-0.5" x-text="res.loc"></p>
+                        </div>
+                        <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-brand group-hover:text-white transition-all transform group-hover:translate-x-1 shrink-0">
+                            <i class="fas fa-chevron-right text-[7px]"></i>
+                        </div>
+                    </div>
+                </template>
+                
+                <template x-if="filteredRestaurants.length === 0">
+                    <div class="py-12 text-center">
+                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-dashed border-gray-200 text-gray-300">
+                            <i class="fas fa-search text-xl"></i>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium">Không tìm thấy nhà hàng phù hợp</p>
+                        <button @click="searchQuery = ''" class="mt-2 text-xs font-bold text-brand hover:underline">Xóa bộ lọc tìm kiếm</button>
+                    </div>
+                </template>
+            </div>
+            
+            <div class="p-6 bg-gray-50/50 text-center">
+                <a href="category_website.html" class="text-[12px] font-bold text-brand hover:underline">
+                    Xem tất cả 1,200+ địa điểm <i class="fas fa-external-link-alt ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data removed as it is now in x-data directly for cleaner Alpine logic
+    </script>
+</body>
+</html>
