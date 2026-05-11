@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hội Viên TapGO - Phân Hạng Quyền Lợi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="data.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Be Vietnam Pro', 'sans-serif'] },
+                    colors: {
+                        brand: { DEFAULT: '#F48133', hover: '#E06B1F', bg: '#FFF3EB' },
+                        silver: '#9CA3AF', gold: '#FBBF24', platinum: '#1F2937', diamond: '#06B6D4'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Lenis Smooth Scroll CSS */
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+
+        body {
+            background-color: #FAFAFA !important;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(244, 129, 51, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(244, 129, 51, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(251, 191, 36, 0.05) 0px, transparent 50%) !important;
+            background-attachment: fixed !important;
+        }
+
+        .tier-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tier-card:hover {
+            transform: translateY(-10px);
+        }
+        .tier-active {
+            border: 2px solid #F48133;
+            box-shadow: 0 20px 40px rgba(244, 129, 51, 0.15);
+        }
+    </style>
+</head>
+
+<body x-data="getTapgoData()" class="text-gray-800 antialiased min-h-screen flex flex-col">
+    <!-- HEADER (REUSED) -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-[100] border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto max-w-[1280px] px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <a href="home_website.html">
+                    <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto object-contain">
+                </a>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                    <img :src="user.avatar" class="w-8 h-8 rounded-full border-2 border-white shadow-sm">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold" x-text="user.name"></span>
+                        <span class="text-[10px] text-brand font-bold uppercase tracking-wider" x-text="'Hạng ' + user.tier"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 container mx-auto max-w-[1280px] px-4 py-12">
+        <!-- USER CURRENT STATUS -->
+        <section class="bg-white rounded-[3rem] p-10 border border-gray-100 shadow-xl mb-16 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-brand/5 to-transparent"></div>
+            
+            <div class="flex flex-col md:flex-row items-center gap-12 relative z-10">
+                <!-- Large Badge -->
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-gold to-brand opacity-20 blur-3xl group-hover:opacity-40 transition-opacity"></div>
+                    <div class="w-48 h-48 rounded-[3rem] bg-gradient-to-br flex items-center justify-center text-white text-6xl shadow-2xl relative"
+                        :class="tiers.find(t => t.id === user.tier).color">
+                        <i class="fas" :class="'fa-' + tiers.find(t => t.id === user.tier).icon"></i>
+                    </div>
+                    <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white px-6 py-2 rounded-full shadow-lg border border-gray-100">
+                        <span class="text-xl font-black text-gray-900 tracking-tighter uppercase" x-text="tiers.find(t => t.id === user.tier).name"></span>
+                    </div>
+                </div>
+
+                <!-- Info & Progress -->
+                <div class="flex-1 space-y-6 w-full">
+                    <div>
+                        <h1 class="text-4xl font-black text-gray-900 mb-2">Xin chào, <span x-text="user.name"></span>!</h1>
+                        <p class="text-gray-500 font-medium text-lg">Bạn đang là hội viên <strong class="text-brand" x-text="tiers.find(t => t.id === user.tier).name"></strong>. Hãy tích lũy thêm để thăng hạng nhé!</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <div class="space-y-1">
+                                <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Điểm tích lũy hiện tại</span>
+                                <div class="text-4xl font-black text-gray-900" x-text="user.points.toLocaleString() + ' Điểm'"></div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Còn lại</span>
+                                <div class="text-lg font-bold text-brand" x-text="(user.nextTierPoints - user.points).toLocaleString() + ' điểm đến hạng tiếp theo'"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="h-4 bg-gray-100 rounded-full overflow-hidden p-1 border border-gray-50">
+                            <div class="h-full bg-gradient-to-r from-brand to-yellow-400 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(244,129,51,0.5)]"
+                                :style="'width: ' + (user.points / user.nextTierPoints * 100) + '%'"></div>
+                        </div>
+                        
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                            <span>Bạc (0)</span>
+                            <span>Vàng (1.000)</span>
+                            <span>Bạch Kim (5.000)</span>
+                            <span>Kim Cương (20.000)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALL TIERS GRID -->
+        <h2 class="text-3xl font-black text-gray-900 mb-12 text-center uppercase tracking-tight">Hệ Thống Phân Hạng & Quyền Lợi</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <template x-for="tier in tiers" :key="tier.id">
+                <div class="tier-card bg-white rounded-[2.5rem] p-8 border border-gray-100 flex flex-col items-center text-center shadow-lg relative overflow-hidden group"
+                    :class="user.tier === tier.id ? 'tier-active' : ''">
+                    
+                    <!-- Current Badge -->
+                    <template x-if="user.tier === tier.id">
+                        <div class="absolute top-4 right-4 bg-brand text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">Hiện tại</div>
+                    </template>
+
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br flex items-center justify-center text-white text-3xl mb-6 shadow-xl group-hover:scale-110 transition duration-500"
+                        :class="tier.color">
+                        <i class="fas" :class="'fa-' + tier.icon"></i>
+                    </div>
+
+                    <h3 class="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tighter" x-text="tier.name"></h3>
+                    <p class="text-brand font-bold text-sm mb-6" x-text="tier.points > 0 ? (tier.points.toLocaleString() + ' Điểm') : 'Dành cho người mới'"></p>
+
+                    <div class="w-full h-px bg-gray-50 mb-6"></div>
+
+                    <ul class="space-y-4 w-full text-left mb-8">
+                        <template x-for="benefit in tier.benefits">
+                            <li class="flex items-center gap-3 text-sm font-medium text-gray-600">
+                                <i class="fas fa-check-circle text-brand text-xs"></i>
+                                <span x-text="benefit"></span>
+                            </li>
+                        </template>
+                    </ul>
+
+                    <button class="mt-auto w-full py-3.5 rounded-2xl font-bold transition shadow-sm"
+                        :class="user.tier === tier.id ? 'bg-brand text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-brand/10 group-hover:text-brand border border-gray-100'">
+                        <span x-text="user.tier === tier.id ? 'Hạng Của Bạn' : 'Xem Chi Tiết'"></span>
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <!-- FAQ / HOW TO EARN -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-gray-900 rounded-[4rem] p-12 text-white overflow-hidden relative">
+            <div class="absolute inset-0 opacity-10">
+                <i class="fas fa-coins text-[400px] absolute -right-20 -bottom-20 rotate-12"></i>
+            </div>
+            
+            <div class="relative z-10 space-y-6">
+                <h2 class="text-4xl font-black leading-tight">Làm thế nào để<br><span class="text-brand font-black">Tích Lũy Điểm?</span></h2>
+                <div class="space-y-4">
+                    <div class="flex gap-4 p-5 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <div class="w-12 h-12 bg-brand/20 text-brand rounded-2xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-shopping-bag text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Mua Voucher</h4>
+                            <p class="text-gray-400 text-sm">Mỗi 10,000đ chi tiêu bạn nhận ngay 10 điểm tích lũy hạng.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-5 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-star text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Đánh giá dịch vụ</h4>
+                            <p class="text-gray-400 text-sm">Nhận ngay 50 điểm cho mỗi đánh giá kèm hình ảnh thực tế.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-5 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm">
+                        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-user-plus text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Giới thiệu bạn bè</h4>
+                            <p class="text-gray-400 text-sm">Thưởng 500 điểm khi bạn bè thực hiện đơn hàng đầu tiên.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative z-10">
+                <div class="bg-gradient-to-br from-brand to-orange-600 rounded-[3rem] p-8 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 blur-3xl rounded-full"></div>
+                    <h3 class="text-2xl font-black mb-4">Quy định đổi điểm</h3>
+                    <p class="text-orange-100 mb-8 leading-relaxed">Điểm tích lũy hạng được dùng để nâng cấp đặc quyền và không bị trừ khi bạn đổi TapCoin lấy Voucher. Thứ hạng của bạn sẽ được duy trì trong vòng 12 tháng kể từ ngày thăng hạng.</p>
+                    <div class="flex items-center gap-4 bg-black/20 p-4 rounded-2xl border border-white/10">
+                        <i class="fas fa-info-circle text-yellow-300"></i>
+                        <span class="text-xs font-bold uppercase tracking-widest">Thời gian cập nhật: 24h sau giao dịch</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER (REUSED) -->
+    <footer class="bg-white border-t border-gray-100 pt-16 pb-8">
+        <div class="container mx-auto max-w-[1280px] px-4">
+            <div class="flex flex-col md:flex-row justify-between gap-12 mb-12">
+                <div class="md:w-1/3 space-y-6">
+                    <img src="Tap Go-Photoroom.png" class="h-14 w-auto grayscale opacity-50">
+                    <p class="text-gray-500 text-sm leading-relaxed font-medium italic">Nền tảng e-Voucher ứng dụng Gamification – Săn deal, tích điểm, thăng hạng thành viên.</p>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">© 2025 . Vận hành bởi TAPGO Vietnam JSC.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
+</body>
+
+</html>
