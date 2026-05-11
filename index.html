@@ -260,19 +260,17 @@
 
             <div class="flex items-center gap-4 ml-auto" x-data="{openNotif: false, openVoucher: false}">
                 <div class="flex items-center gap-4 relative z-[60]">
-                    <div
-                        class="flex items-center gap-2 bg-brand-bg px-4 py-1.5 rounded-xl border border-brand/30 cursor-pointer hover:bg-brand hover:text-white group transition-all">
-                        <div class="w-7 h-7 rounded-lg bg-tier-gold flex items-center justify-center text-white">
+                    <a href="membership_website.html"
+                        class="flex items-center gap-2 bg-white px-4 py-1.5 rounded-xl border border-brand/30 cursor-pointer hover:bg-brand-bg transition-all active:scale-95 group">
+                        <div class="w-7 h-7 rounded-lg bg-yellow-400 flex items-center justify-center text-white shadow-sm group-hover:rotate-12 transition">
                             <i class="fas fa-crown text-[10px]"></i>
                         </div>
-                        <div class="flex flex-col group-hover:text-white">
+                        <div class="flex flex-col">
                             <span
-                                class="text-[9px] font-bold text-brand group-hover:text-white uppercase leading-none">Hạng
-                                Vàng</span>
-                            <span class="text-[14px] font-bold leading-tight text-gray-800 group-hover:text-white">1,250
-                                Điểm</span>
+                                class="text-[9px] font-black text-brand uppercase leading-none" x-text="'Hạng ' + tiers.find(t => t.id === user.tier).name"></span>
+                            <span class="text-[14px] font-black leading-tight text-gray-800" x-text="user.points.toLocaleString() + ' Điểm'"></span>
                         </div>
-                    </div>
+                    </a>
                     <!-- Notification Bell -->
                     <div class="relative" @click.away="openNotif = false">
                         <button @click="openNotif = !openNotif" class="text-gray-600 hover:text-brand transition p-1">
@@ -484,21 +482,8 @@
                             class="inline-flex items-center gap-2 bg-brand text-white hover:bg-brand-hover px-5 py-1.5 rounded-full text-[13.5px] font-bold transition shadow-sm whitespace-nowrap">
                             <i class="fas fa-calendar-check text-[12px]"></i>Đặt bàn</a>
                     </div>
-                    <!-- USER TIER CARD (LOGGED IN) -->
-                    <div class="border-l border-gray-200 pl-4 hidden md:block" x-show="isLoggedIn">
-                        <a href="membership_website.html"
-                            class="flex items-center gap-3 bg-brand px-4 py-1.5 rounded-2xl hover:bg-brand-hover transition shadow-md hover:shadow-lg active:scale-95 group">
-                            <div class="w-8 h-8 bg-yellow-400 rounded-xl flex items-center justify-center text-white shadow-sm group-hover:rotate-12 transition">
-                                <i class="fas fa-crown text-sm"></i>
-                            </div>
-                            <div class="flex flex-col leading-tight">
-                                <span class="text-[9px] font-black text-white uppercase tracking-widest" x-text="'Hạng ' + tiers.find(t => t.id === user.tier).name"></span>
-                                <span class="text-[13px] font-black text-white" x-text="user.points.toLocaleString() + ' Điểm'"></span>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- LOGIN / REGISTER PILL BUTTON (NOT LOGGED IN) -->
-                    <div class="border-l border-gray-200 pl-4 hidden md:block" x-show="!isLoggedIn">
+                    <!-- LOGIN / REGISTER PILL BUTTON -->
+                    <div class="border-l border-gray-200 pl-4 hidden md:block">
                         <a href="login_website.html"
                             class="inline-block border border-brand text-brand hover:bg-brand hover:text-white px-5 py-1.5 rounded-full text-[13.5px] font-bold transition shadow-sm whitespace-nowrap">Đăng
                             ký / Đăng nhập</a>
