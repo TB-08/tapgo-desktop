@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAPGO - Khám phá Deal | Đà Nẵng, Huế, Hội An</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="data.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Be Vietnam Pro', 'sans-serif'] },
+                    colors: {
+                        brand: { DEFAULT: '#F48133', hover: '#E06B1F', bg: '#FFF3EB' },
+                        danger: '#EF4444', success: '#10B981',
+                        tier: { silver: '#9CA3AF', gold: '#FBBF24', platinum: '#1F2937' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* --- body mesh gradient --- */
+        body {
+            background-color: #FAFAFA !important;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 200, 100, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 100, 50, 0.1) 0px, transparent 50%) !important;
+            background-attachment: fixed !important;
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        .truncate-2-lines {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hover-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(244, 129, 51, 0.05);
+        }
+
+        .hover-card-product:hover {
+            transform: translateY(-4px);
+            border-color: #F8A56D;
+            z-index: 10;
+        }
+
+        /* Custom checkbox & radio */
+        .custom-check {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .custom-check input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .custom-check .box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #D1D5DB;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .custom-check input:checked~.box {
+            background: #F48133;
+            border-color: #F48133;
+        }
+
+        .custom-check .box .tick {
+            opacity: 0;
+            transform: scale(0.5) rotate(-10deg);
+            transition: all 0.15s ease;
+        }
+
+        .custom-check input:checked~.box .tick {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Removed ticket styles */
+
+        /* Radio */
+        .custom-radio {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .custom-radio input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .custom-radio .ring {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #D1D5DB;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .custom-radio input:checked~.ring {
+            border-color: #F48133;
+        }
+
+        .custom-radio .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #F48133;
+            opacity: 0;
+            transform: scale(0.3);
+            transition: all 0.15s ease;
+        }
+
+        .custom-radio input:checked~.ring .dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Price slider */
+        .price-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right, #F48133 0%, #F48133 50%, #E5E7EB 50%, #E5E7EB 100%);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .price-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #F48133;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .price-range::-webkit-slider-thumb:hover {
+            box-shadow: 0 2px 10px rgba(244, 129, 51, 0.6);
+        }
+    </style>
+</head>
+
+<body x-data="getTapgoData()" class="text-gray-900 antialiased font-sans flex flex-col justify-between min-h-screen">
+
+    <!-- TOP BAR -->
+    <div class="bg-gray-100/90 text-[11px] text-gray-500 py-2 border-b border-gray-200">
+        <div class="container mx-auto max-w-[1280px] px-4 flex justify-between items-center">
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-brand transition"><i class="fas fa-headset mr-1"></i>Hotline: 1900
+                    1234</a>
+                <span class="text-gray-300">|</span><a href="#" class="hover:text-brand transition"><i
+                        class="fas fa-store mr-1"></i>Đăng ký Vendor</a>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="#" class="hover:text-brand">Tải ứng dụng</a>
+                <a href="#" class="hover:text-brand">Trung tâm hỗ trợ</a>
+                
+                <!-- Language Switcher -->
+                <div class="relative ml-2" @click.away="openLang = false">
+                    <button @click="openLang = !openLang" 
+                        class="flex items-center gap-1.5 bg-white border border-gray-200 px-2 py-1 rounded-lg hover:border-brand transition shadow-sm group">
+                        <img :src="lang === 'vi' ? 'https://flagcdn.com/w40/vn.png' : 'https://flagcdn.com/w40/gb.png'" 
+                            class="w-5 h-3.5 object-cover rounded-[2px]" alt="Flag">
+                        <span class="font-bold text-[11px] text-gray-700 uppercase" x-text="lang"></span>
+                        <i class="fas fa-chevron-down text-[8px] text-gray-400 group-hover:text-brand transition"></i>
+                    </button>
+
+                    <!-- Dropdown Panel -->
+                    <div x-show="openLang" 
+                        x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        style="display: none;"
+                        class="absolute right-0 mt-2 w-max min-w-[150px] bg-white rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-gray-100 py-1.5 z-[100]">
+                        
+                        <!-- Option: Tiếng Việt -->
+                        <div @click="changeLang('vi')" 
+                            class="flex items-center justify-between px-3 py-2 hover:bg-brand-bg cursor-pointer transition group">
+                            <div class="flex items-center gap-3">
+                                <img src="https://flagcdn.com/w40/vn.png" class="w-5 h-3.5 object-cover rounded-[2px]" alt="VN">
+                                <span class="text-[13px] font-medium text-gray-700 group-hover:text-brand whitespace-nowrap">Tiếng Việt</span>
+                            </div>
+                            <i x-show="lang === 'vi'" class="fas fa-check text-brand text-[10px] ml-4"></i>
+                        </div>
+
+                        <!-- Option: English -->
+                        <div @click="changeLang('en')" 
+                            class="flex items-center justify-between px-3 py-2 hover:bg-brand-bg cursor-pointer transition group">
+                            <div class="flex items-center gap-3">
+                                <img src="https://flagcdn.com/w40/gb.png" class="w-5 h-3.5 object-cover rounded-[2px]" alt="EN">
+                                <span class="text-[13px] font-medium text-gray-700 group-hover:text-brand whitespace-nowrap">English</span>
+                            </div>
+                            <i x-show="lang === 'en'" class="fas fa-check text-brand text-[10px] ml-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-brand/10">
+        <div class="container mx-auto max-w-[1280px] px-4 py-3 flex items-center gap-8">
+            <a href="home_website.html">
+                <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto object-contain">
+            </a>
+
+            <div class="flex-1 max-w-2xl text-[13px]">
+                <div class="flex border-2 border-brand bg-white rounded-xl overflow-visible relative">
+                    <!-- Dropdown Location -->
+                    <div @click.away="openLoc = false" class="relative border-r border-gray-200">
+                        <div @click="openLoc = !openLoc"
+                            class="bg-gray-50 h-full px-4 py-2.5 text-gray-700 cursor-pointer font-medium flex items-center justify-between min-w-[120px] hover:bg-gray-100 transition whitespace-nowrap rounded-l-[10px]">
+                            <span x-text="loc"></span><i class="fas fa-angle-down text-[10px] ml-2 text-gray-400"></i>
+                        </div>
+                        <ul x-show="openLoc" style="display: none;" x-transition
+                            class="absolute top-[calc(100%+8px)] left-0 w-[180px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.1)] rounded-xl border border-gray-100 py-2 z-50">
+                            <li @click="loc='Toàn quốc'; openLoc=false"
+                                class="px-4 py-2.5 hover:bg-brand-bg hover:text-brand cursor-pointer font-bold border-b border-gray-50 flex items-center gap-2">
+                                <i class="fas fa-globe-asia text-gray-400"></i> Toàn quốc
+                            </li>
+                            <li @click="loc='Hà Nội'; openLoc=false"
+                                class="px-4 py-2 hover:bg-brand-bg hover:text-brand cursor-pointer font-medium">Hà Nội
+                            </li>
+                            <li @click="loc='TP.Hồ Chí Minh'; openLoc=false"
+                                class="px-4 py-2 hover:bg-brand-bg hover:text-brand cursor-pointer font-medium">TP.Hồ
+                                Chí Minh</li>
+                            <li @click="loc='Đà Nẵng'; openLoc=false"
+                                class="px-4 py-2 hover:bg-brand-bg hover:text-brand cursor-pointer font-medium">Đà Nẵng
+                            </li>
+                        </ul>
+                    </div>
+
+                    <input type="text" class="w-full px-5 py-2.5 focus:outline-none bg-transparent"
+                        placeholder="Tìm kiếm dịch vụ ưu đãi bạn quan tâm...">
+                    <button class="bg-brand text-white px-7 hover:bg-brand-hover rounded-r-[10px]"><i
+                            class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 ml-auto" x-data="{openNotif: false, openVoucher: false}">
+                <div class="flex items-center gap-4 relative z-[60]">
+                    <div
+                        class="flex items-center gap-2 bg-brand-bg px-4 py-1.5 rounded-xl border border-brand/30 cursor-pointer hover:bg-brand hover:text-white group transition-all">
+                        <div class="w-7 h-7 rounded-lg bg-tier-gold flex items-center justify-center text-white">
+                            <i class="fas fa-crown text-[10px]"></i>
+                        </div>
+                        <div class="flex flex-col group-hover:text-white">
+                            <span
+                                class="text-[9px] font-bold text-brand group-hover:text-white uppercase leading-none">Hạng
+                                Vàng</span>
+                            <span class="text-[14px] font-bold leading-tight text-gray-800 group-hover:text-white">1,250
+                                Điểm</span>
+                        </div>
+                    </div>
+                    <!-- Notification Bell -->
+                    <div class="relative" @click.away="openNotif = false">
+                        <button @click="openNotif = !openNotif" class="text-gray-600 hover:text-brand transition p-1">
+                            <div class="relative inline-block">
+                                <i class="fa-regular fa-bell text-2xl"></i>
+                                <span
+                                    class="absolute -top-1 -right-1.5 bg-danger border border-white text-white text-[9px] font-medium w-4 h-4 rounded-full flex items-center justify-center">3</span>
+                            </div>
+                        </button>
+                        <div x-show="openNotif" x-transition style="display:none"
+                            class="absolute right-0 top-[calc(100%+12px)] w-[340px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                                <h4 class="font-bold text-[15px]">Thông báo</h4>
+                                <span class="text-[12px] text-brand font-medium cursor-pointer hover:underline">Đánh
+                                    dấu đã
+                                    đọc</span>
+                            </div>
+                            <ul>
+                                <li
+                                    class="px-5 py-4 border-b border-gray-50 flex gap-3 hover:bg-orange-50 transition cursor-pointer">
+                                    <div
+                                        class="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-ticket-alt text-brand"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-[13.5px] text-gray-900">Voucher sắp hết hạn!</p>
+                                        <p class="text-[12px] text-gray-500">Yakimono - Còn 2 ngày</p><span
+                                            class="text-[11px] text-gray-400">30 phút trước</span>
+                                    </div>
+                                    <span class="w-2 h-2 bg-brand rounded-full flex-shrink-0 mt-2"></span>
+                                </li>
+                                <li
+                                    class="px-5 py-4 border-b border-gray-50 flex gap-3 hover:bg-orange-50 transition cursor-pointer">
+                                    <div
+                                        class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-check-circle text-green-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-[13.5px] text-gray-900">Thanh toán thành công</p>
+                                        <p class="text-[12px] text-gray-500">Combo Spa GrandView - 299.000đ</p><span
+                                            class="text-[11px] text-gray-400">2 giờ trước</span>
+                                    </div>
+                                    <span class="w-2 h-2 bg-brand rounded-full flex-shrink-0 mt-2"></span>
+                                </li>
+                                <li
+                                    class="px-5 py-4 flex gap-3 hover:bg-orange-50 transition cursor-pointer opacity-60">
+                                    <div
+                                        class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <i class="fas fa-crown text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-[13.5px] text-gray-900">Lên Hạng Vàng!</p>
+                                        <p class="text-[12px] text-gray-500">Tích 500 điểm để lên Bạch Kim</p><span
+                                            class="text-[11px] text-gray-400">Hôm qua</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="px-5 py-3 text-center border-t border-gray-100"><a href="#"
+                                    class="text-brand font-medium text-[13px] hover:underline">Xem tất cả thông
+                                    báo</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- My Vouchers -->
+                    <div class="relative" @click.away="openVoucher = false" x-data="{tabMyVoucher: 'chuadung'}">
+                        <button @click="openVoucher = !openVoucher"
+                            class="flex items-center gap-2 text-gray-600 hover:text-brand transition text-left">
+                            <div class="relative">
+                                <i class="fa-solid fa-ticket-alt text-[26px]"></i>
+                                <span
+                                    class="absolute -top-1 -right-2 bg-black border border-white text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-medium">5</span>
+                            </div>
+                            <span
+                                class="font-medium text-[13px] hidden xl:block leading-tight text-gray-700">Voucher<br>của
+                                tôi</span>
+                        </button>
+                        <div x-show="openVoucher" x-transition style="display:none"
+                            class="absolute right-0 top-[calc(100%+12px)] w-[380px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                            <div
+                                class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+                                <h4 class="font-bold text-[15px] flex items-center gap-2"><i
+                                        class="fas fa-ticket-alt text-brand"></i> Voucher của tôi</h4>
+                                <span
+                                    class="bg-brand text-white text-[11px] font-medium px-2.5 py-0.5 rounded-full">5
+                                    voucher</span>
+                            </div>
+                            <div class="flex border-b border-gray-100 text-[13px] font-medium">
+                                <button @click="tabMyVoucher='chuadung'"
+                                    :class="tabMyVoucher==='chuadung'?'text-brand border-b-2 border-brand font-bold':'text-gray-400 hover:text-brand transition'"
+                                    class="flex-1 py-3 transition">Chưa dùng (3)</button>
+                                <button @click="tabMyVoucher='dadung'"
+                                    :class="tabMyVoucher==='dadung'?'text-brand border-b-2 border-brand font-bold':'text-gray-400 hover:text-brand transition'"
+                                    class="flex-1 py-3 transition">Đã dùng (2)</button>
+                            </div>
+
+                            <!-- TAB: CHƯA DÙNG -->
+                            <ul x-show="tabMyVoucher==='chuadung'" x-transition
+                                class="divide-y divide-gray-50 max-h-[280px] overflow-y-auto">
+                                <li class="flex gap-3 p-4 hover:bg-orange-50 transition cursor-pointer group">
+                                    <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=200"
+                                        class="w-16 h-16 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-[13.5px] text-gray-900 truncate">Yakimono - Thịt
+                                            Nướng
+                                            Nhật
+                                        </p>
+                                        <p class="text-[12px] text-gray-500 mt-0.5">Giá trị: <span
+                                                class="text-brand font-bold">1,890 TapCoin</span></p>
+                                        <p
+                                            class="text-[11px] text-danger mt-1 font-medium bg-red-50 w-max px-1.5 rounded">
+                                            Hết hạn: 30/12/2025</p>
+                                    </div>
+                                    <button @click="openQr = true; openVoucher = false"
+                                        class="self-center bg-brand text-white text-[11px] font-medium px-3 py-1.5 rounded-lg hover:bg-brand-hover transition whitespace-nowrap hover:-translate-y-0.5">Dùng
+                                        ngay</button>
+                                </li>
+                                <li class="flex gap-3 p-4 hover:bg-orange-50 transition cursor-pointer group">
+                                    <img src="https://images.unsplash.com/photo-1560624052-449f5ddf0c31?q=80&w=200"
+                                        class="w-16 h-16 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-[13.5px] text-gray-900 truncate">GrandView Hotel
+                                            - 2N1Đ
+                                        </p>
+                                        <p class="text-[12px] text-gray-500 mt-0.5">Giá trị: <span
+                                                class="text-brand font-bold">12,000 TapCoin</span></p>
+                                        <p class="text-[11px] text-gray-400 mt-1 font-medium">Hết hạn: 15/01/2026
+                                        </p>
+                                    </div>
+                                    <button @click="openQr = true; openVoucher = false"
+                                        class="self-center bg-brand text-white text-[11px] font-medium px-3 py-1.5 rounded-lg hover:bg-brand-hover transition whitespace-nowrap shadow hover:-translate-y-0.5">Dùng
+                                        ngay</button>
+                                </li>
+                                <li class="flex gap-3 p-4 hover:bg-orange-50 transition cursor-pointer group">
+                                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=200"
+                                        class="w-16 h-16 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-[13.5px] text-gray-900 truncate">The Coffee House
+                                            E-Gift
+                                        </p>
+                                        <p class="text-[12px] text-gray-500 mt-0.5">Giá trị: <span
+                                                class="text-brand font-bold">1,000 TapCoin</span></p>
+                                        <p class="text-[11px] text-gray-400 mt-1 font-medium">Hết hạn: 28/02/2026
+                                        </p>
+                                    </div>
+                                    <button @click="openQr = true; openVoucher = false"
+                                        class="self-center bg-brand text-white text-[11px] font-medium px-3 py-1.5 rounded-lg hover:bg-brand-hover transition whitespace-nowrap shadow hover:-translate-y-0.5">Dùng
+                                        ngay</button>
+                                </li>
+                            </ul>
+
+                            <!-- TAB: ĐÃ DÙNG -->
+                            <ul x-show="tabMyVoucher==='dadung'" x-transition style="display:none"
+                                class="divide-y divide-gray-50 max-h-[280px] overflow-y-auto">
+                                <li class="flex gap-3 p-4 opacity-50 cursor-not-allowed">
+                                    <div class="relative flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=200"
+                                            class="w-16 h-16 rounded-xl object-cover grayscale">
+                                        <div
+                                            class="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-white text-xl drop-shadow"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-[13.5px] text-gray-900 truncate line-through">Vé
+                                            xem phim
+                                            CGV 2D</p>
+                                        <p class="text-[12px] text-gray-500 mt-0.5">Đã dùng: <span
+                                                class="font-bold">12/04/2026</span></p>
+                                        <button class="text-[11px] text-brand hover:underline mt-1 font-medium"><i
+                                                class="fas fa-star text-yellow-400 mr-1"></i>Viết đánh giá</button>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3 p-4 opacity-50 cursor-not-allowed">
+                                    <div class="relative flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=200"
+                                            class="w-16 h-16 rounded-xl object-cover grayscale">
+                                        <div
+                                            class="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                                            <i class="fas fa-check-circle text-white text-xl drop-shadow"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-[13.5px] text-gray-900 truncate line-through">
+                                            Combo 2 ly
+                                            Phúc Long</p>
+                                        <p class="text-[12px] text-gray-500 mt-0.5">Đã dùng: <span
+                                                class="font-bold">01/04/2026</span></p>
+                                        <span class="text-[11px] text-gray-400 mt-1"><i class="fas fa-check mr-1"></i>Đã
+                                            đánh giá</span>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div
+                                class="px-5 py-3 text-center border-t border-gray-100 bg-gray-50 hover:bg-gray-100 transition">
+                                <a href="my_vouchers.html?tab=chuadung" x-show="tabMyVoucher==='chuadung'"
+                                    class="text-brand font-medium text-[13px] hover:underline flex justify-center items-center gap-1.5">Xem
+                                    tất cả voucher chưa dùng <i class="fas fa-arrow-right text-[10px]"></i></a>
+                                <a href="my_vouchers.html?tab=dadung" x-show="tabMyVoucher==='dadung'"
+                                    style="display:none"
+                                    class="text-gray-500 font-medium text-[13px] hover:text-brand hover:underline flex justify-center items-center gap-1.5">Xem
+                                    toàn bộ lịch sử sử dụng <i class="fas fa-arrow-right text-[10px]"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ĐẶT BÀN BUTTON -->
+                    <div class="border-l border-gray-200 pl-4 hidden md:block">
+                        <a href="booking_website.html"
+                            class="inline-flex items-center gap-2 bg-brand text-white hover:bg-brand-hover px-5 py-1.5 rounded-full text-[13.5px] font-bold transition shadow-sm whitespace-nowrap">
+                            <i class="fas fa-calendar-check text-[12px]"></i>Đặt bàn</a>
+                    </div>
+                    <!-- LOGIN / REGISTER PILL BUTTON (MOVED FAR RIGHT) -->
+                    <div class="border-l border-gray-200 pl-4 hidden md:block">
+                        <a href="login_website.html"
+                            class="inline-block border border-brand text-brand hover:bg-brand hover:text-white px-5 py-1.5 rounded-full text-[13.5px] font-bold transition shadow-sm whitespace-nowrap">Đăng
+                            ký / Đăng nhập</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white/95 border-t border-gray-100 relative z-40">
+            <div class="container mx-auto max-w-[1280px] px-4 overflow-x-auto relative pb-1 pt-1"
+                style="scrollbar-width: thin; scrollbar-color: #E5E7EB transparent;">
+                <div class="flex items-center justify-between gap-6 min-w-max md:min-w-full px-2">
+                    <a href="category_website.html"
+                        class="flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-orange-50 transition group cursor-pointer">
+                        <span
+                            class="w-10 h-10 border border-brand bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition"><i
+                                class="fas fa-fire text-brand text-[16px] animate-pulse"></i></span>
+                        <span class="text-[12px] font-bold text-brand whitespace-nowrap">Flash Deal</span>
+                    </a>
+                    <template x-for="(c, idx) in cats">
+                        <a href="category_website.html"
+                            class="flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-orange-50 transition group cursor-pointer">
+                            <span
+                                class="w-10 h-10 border border-transparent bg-transparent rounded-full flex items-center justify-center group-hover:border-brand group-hover:scale-110 group-hover:bg-white transition">
+                                <i class="text-[18px] text-gray-500 group-hover:text-brand transition"
+                                    :class="'fa-solid fa-'+c.i"></i>
+                            </span>
+                            <span
+                                class="text-[12px] font-medium text-gray-700 group-hover:text-brand group-hover:font-bold whitespace-nowrap"
+                                x-text="c.name"></span>
+                        </a>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-[1280px] px-4 py-8 mb-auto">
+
+        <!-- Breadcrumbs -->
+        <div class="text-[13px] font-medium text-gray-500 mb-8 pb-3 border-b border-gray-200 flex items-center gap-2">
+            <a href="home_website.html" class="hover:text-brand transition"><i class="fas fa-home"></i> Trang chủ</a>
+            <i class="fas fa-chevron-right text-[9px] text-gray-300"></i>
+            <span class="text-brand font-medium drop-shadow-sm">Thực đơn Nhà Hàng & Ẩm thực</span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8">
+
+            <!-- LEFT SIDEBAR FILTERS -->
+            <div class="col-span-12 lg:col-span-3 xl:col-span-3">
+                <div
+                    class="bg-white/70 backdrop-blur-md border border-white/50 rounded-3xl p-6 sticky top-24">
+                    <h3
+                        class="font-bold text-[16px] mb-6 flex items-center gap-2 border-b border-brand/20 pb-4 text-gray-900">
+                        <i class="fas fa-filter text-brand text-lg"></i> BỘ LỌC TÌM KIẾM
+                    </h3>
+
+                    <!-- DANH MỤC PHỤ -->
+                    <div class="mb-6 pb-6 border-b border-gray-100">
+                        <h4
+                            class="font-bold text-[13px] mb-3.5 text-gray-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-tags text-brand text-[11px]"></i> Danh mục phụ
+                        </h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check">
+                                        <input type="checkbox" checked>
+                                        <span class="box"><svg class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span>
+                                    </span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Buffet
+                                        / Lẩu Nướng</span>
+                                    <span class="ml-auto text-[11px] text-gray-400 font-medium">124</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check">
+                                        <input type="checkbox">
+                                        <span class="box"><svg class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span>
+                                    </span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Món
+                                        Á (Hàn, Nhật, Thái)</span>
+                                    <span class="ml-auto text-[11px] text-gray-400 font-medium">89</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check">
+                                        <input type="checkbox">
+                                        <span class="box"><svg class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span>
+                                    </span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Đồ
+                                        uống & Cà phê</span>
+                                    <span class="ml-auto text-[11px] text-gray-400 font-medium">67</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check">
+                                        <input type="checkbox">
+                                        <span class="box"><svg class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span>
+                                    </span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Tráng
+                                        miệng & Bánh ngọt</span>
+                                    <span class="ml-auto text-[11px] text-gray-400 font-medium">45</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check">
+                                        <input type="checkbox">
+                                        <span class="box"><svg class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span>
+                                    </span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Ăn
+                                        vặt đường phố</span>
+                                    <span class="ml-auto text-[11px] text-gray-400 font-medium">38</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- MỨC GIẢM GIÁ (New) -->
+                    <div class="mb-6 pb-6 border-b border-gray-100">
+                        <h4
+                            class="font-bold text-[13px] mb-3.5 text-gray-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-percent text-brand text-[11px]"></i> Mức Giảm Giá
+                        </h4>
+                        <ul class="space-y-3">
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition flex items-center gap-2">Giảm
+                                        20% – 40% <span
+                                            class="bg-orange-50 text-brand text-[10px] font-bold px-1.5 py-0.5 rounded">PHỔ
+                                            BIẾN</span></span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox" checked><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition flex items-center gap-2">Giảm
+                                        50%+ <span
+                                            class="bg-danger/10 text-danger text-[10px] font-bold px-1.5 py-0.5 rounded">HẮP
+                                            DẪN</span></span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Đi
+                                        kèm quà tặng</span>
+                                </label></li>
+                        </ul>
+                    </div>
+
+                    <!-- KHU VỰC -->
+                    <div class="mb-6 pb-6 border-b border-gray-100">
+                        <h4
+                            class="font-bold text-[13px] mb-3.5 text-gray-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-map-marker-alt text-brand text-[11px]"></i> Khu vực
+                        </h4>
+                        <ul class="space-y-3">
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox" checked><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Đà
+                                        Nẵng</span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Hội
+                                        An</span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Huế</span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Nha
+                                        Trang</span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <span class="custom-check"><input type="checkbox"><span class="box"><svg
+                                                class="tick w-3 h-3" viewBox="0 0 12 10" fill="none">
+                                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg></span></span>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Toàn
+                                        quốc</span>
+                                </label></li>
+                        </ul>
+                    </div>
+
+                    <!-- YÊU CẦU CẤP ĐỘ THẺ -->
+                    <div class="mb-2">
+                        <h4
+                            class="font-bold text-[13px] mb-3.5 text-gray-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-crown text-brand text-[11px]"></i> Cấp độ thành viên
+                        </h4>
+                        <ul class="space-y-3">
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="tier" class="w-5 h-5 accent-brand cursor-pointer" checked>
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition">Mọi
+                                        hạng</span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="tier" class="w-5 h-5 accent-brand cursor-pointer">
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition flex items-center gap-2">
+                                        Hạng Bạc <i class="fa-solid fa-medal text-gray-400"></i>
+                                    </span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="tier" class="w-5 h-5 accent-brand cursor-pointer">
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition flex items-center gap-2">
+                                        Hạng Vàng <i class="fa-solid fa-medal text-yellow-400"></i>
+                                    </span>
+                                </label></li>
+                            <li><label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="tier" class="w-5 h-5 accent-brand cursor-pointer">
+                                    <span
+                                        class="text-[13.5px] text-gray-700 font-medium group-hover:text-brand transition flex items-center gap-2">
+                                        Bạch Kim <i class="fa-solid fa-gem text-gray-800"></i>
+                                    </span>
+                                </label></li>
+                        </ul>
+                    </div>
+
+                    <!-- RESET BUTTON -->
+                    <button
+                        class="mt-6 w-full py-2.5 rounded-xl border-2 border-gray-200 text-gray-500 hover:border-brand hover:text-brand font-medium text-[13px] transition-all">
+                        <i class="fas fa-rotate-left mr-1.5"></i> Xóa bộ lọc
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT CONTENT GRID -->
+            <div class="col-span-12 lg:col-span-9 xl:col-span-9">
+
+                <!-- SORTING TABS -->
+                <div
+                    class="bg-white/90 backdrop-blur-md rounded-2xl border border-brand/10 p-2.5 mb-8 flex overflow-x-auto hide-scrollbar gap-2 sticky top-[75px] z-40">
+                    <button @click="currentSortTab = 'eVoucher'"
+                        :class="currentSortTab === 'eVoucher' ? 'bg-brand text-white' : 'bg-transparent text-gray-500 border border-transparent hover:border-brand/30'"
+                        class="flex-1 px-8 py-3 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 transition whitespace-nowrap"><i
+                            class="fas fa-ticket-alt text-lg shadow-sm w-8 h-8 flex items-center justify-center rounded-md"
+                            :class="currentSortTab === 'eVoucher' ? 'bg-white text-brand' : 'bg-gray-100 text-gray-400'"></i>
+                        e-Voucher</button>
+                    <button @click="currentSortTab = 'eGift'"
+                        :class="currentSortTab === 'eGift' ? 'bg-brand text-white' : 'bg-transparent text-gray-500 border border-transparent hover:border-brand/30'"
+                        class="flex-1 px-8 py-3 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 transition whitespace-nowrap"><i
+                            class="fas fa-gift text-lg w-8 h-8 flex items-center justify-center rounded-md"
+                            :class="currentSortTab === 'eGift' ? 'bg-white text-brand' : 'bg-gray-100 text-gray-400'"></i>
+                        e-Gift</button>
+                    <button @click="currentSortTab = 'scanTab'"
+                        :class="currentSortTab === 'scanTab' ? 'bg-brand text-white' : 'bg-transparent text-gray-500 border border-transparent hover:border-brand/30'"
+                        class="flex-1 px-8 py-3 rounded-xl text-[14px] font-bold flex items-center justify-center gap-2 transition whitespace-nowrap"><i
+                            class="fas fa-qrcode text-lg w-8 h-8 flex items-center justify-center rounded-md"
+                            :class="currentSortTab === 'scanTab' ? 'bg-white text-brand' : 'bg-gray-100 text-gray-400'"></i>
+                        Scan Tab</button>
+                </div>
+
+                <!-- TAB CONTENT eVoucher -->
+                <div x-show="currentSortTab === 'eVoucher'" x-transition>
+                    <!-- Tools -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+                        <span class="text-[14px] text-gray-500 font-medium">Mở bán <strong
+                                class="text-brand text-[16px] font-bold italic">845</strong> deal hấp dẫn cho phân
+                            khúc</span>
+                        <div class="flex gap-2 relative">
+                            <select
+                                class="border border-gray-300 rounded-xl py-2 px-4 pr-10 text-[14px] font-medium text-gray-700 bg-white focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none shadow-sm cursor-pointer appearance-none">
+                                <option>Sắp xếp: Bán Chạy Nhất</option>
+                                <option>Sắp xếp: Mới Nhất</option>
+                            </select>
+                            <i
+                                class="fas fa-sort absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY GRID -> 4 columns per row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Alpine rendered remaining vouchers -->
+                        <template x-for="(v, vi) in Array.from({length: 16})" :key="vi">
+                            <a href="product_detail.html"
+                                class="bg-white rounded-[1.2rem] flex flex-col relative shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 group overflow-visible w-full hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(244,129,51,0.15)] transition-all duration-300">
+                                <div class="absolute top-2 left-2 z-20 flex gap-2">
+                                    <span
+                                        class="bg-gradient-to-r from-orange-500 to-danger text-white text-[9px] font-bold px-2 py-1 rounded shadow-sm"
+                                        x-show="vi < 4">🔥 HOT DEAL</span>
+                                </div>
+                                <div class="absolute top-2 right-2 z-20" x-show="vi % 2 === 0">
+                                    <span class="font-bold text-[9px] px-2 py-1 rounded shadow-md"
+                                        style="background:#FBBF24;color:#7C3B00">
+                                        <i class="fas fa-crown text-[8px]"></i> GOLD
+                                    </span>
+                                </div>
+                                <div
+                                    class="relative overflow-hidden aspect-[16/10] rounded-t-[1.2rem] bg-gray-100 z-10 w-full">
+                                    <img :src="['https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=600&auto=format&fit=crop','https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=600&auto=format&fit=crop','https://images.unsplash.com/photo-1560624052-449f5ddf0c31?q=80&w=600&auto=format&fit=crop','https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop','https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop'][vi%5]"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                </div>
+                                <div class="relative h-0 z-30">
+                                    <div
+                                        class="absolute -top-4 left-3 w-8 h-8 bg-white rounded-full flex items-center justify-center p-0.5 shadow-md border border-gray-100">
+                                        <img :src="['https://images.unsplash.com/photo-1560624052-449f5ddf0c31?q=80&w=80','https://images.unsplash.com/photo-1512418490979-9ce792d5e1dc?q=80&w=80'][vi%2]"
+                                            class="w-full h-full object-cover rounded-full aspect-square">
+                                    </div>
+                                </div>
+                                <div
+                                    class="px-4 pt-6 pb-4 flex-1 flex flex-col relative z-20 bg-transparent rounded-b-[1.2rem]">
+                                    <span class="text-[9px] text-gray-500 font-bold uppercase"
+                                        x-text="['MỘC SPA', 'YAKIMONO', 'GRANDVIEW', 'THE COFFEE HOUSE', 'VOUCHER DU LỊCH'][vi%5] + ' &middot; ĐÀ NẴNG'"></span>
+                                    <h3 class="font-bold text-[14px] text-gray-900 leading-snug mt-1 mb-2 group-hover:text-brand transition"
+                                        x-text="'Gói Trải Nghiệm ' + (vi+1) + ' Cao Cấp – Ưu Đãi Độc Quyền'"></h3>
+                                    <div class="flex items-center gap-1.5 mb-2.5">
+                                        <i class="fas fa-star text-yellow-500 text-[10px]"></i>
+                                        <span class="text-[11px] font-bold text-gray-700">4.9</span>
+                                        <span class="text-gray-300 mx-0.5">&middot;</span>
+                                        <span class="text-[10px] text-gray-500 font-medium"
+                                            x-text="(150 + vi*14) + ' đã bán'"></span>
+                                    </div>
+                                    <div class="flex flex-col mt-auto pt-2.5 border-t border-gray-100/80 gap-1.5">
+                                        <div class="flex justify-between items-center w-full">
+                                            <span
+                                                class="bg-red-50 text-danger font-bold text-[10px] px-1.5 py-0.5 rounded"
+                                                x-text="'Giảm ' + (20 + (vi%4)*10) + '%'"></span>
+                                            <span
+                                                class="text-gray-400 text-[10px] line-through decoration-gray-300 font-medium">1,200
+                                                TapCoin</span>
+                                        </div>
+                                        <div class="flex justify-between items-end w-full">
+                                            <span class="text-[10px] text-gray-500 font-medium">Chỉ còn</span>
+                                            <span class="text-brand font-bold text-[15px]"><i
+                                                    class="fas fa-coins text-yellow-500 mr-1 text-[11px]"></i><span
+                                                    x-text="(500 + vi*50) + ''"></span></span>
+                                        </div>
+                                    </div>
+                                    <!-- Hover Reveal CTA -->
+                                    <div
+                                        class="absolute inset-x-0 bottom-0 translate-y-full opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 rounded-b-[1.2rem] overflow-hidden bg-brand z-50">
+                                        <button
+                                            class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 text-[13px] tracking-wide">XEM
+                                            CHI TIẾT DEAL</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </template>
+                    </div>
+                    <!-- Pagination Buttons block ends -->
+
+
+                </div> <!-- End eVoucher block -->
+
+
+                <!-- Pagination Buttons -->
+                <div
+                    class="flex justify-center items-center gap-2 mt-12 bg-white w-max mx-auto p-2 rounded-2xl shadow-sm border border-gray-200">
+                    <button
+                        class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 font-medium transition"><i
+                            class="fas fa-chevron-left text-[12px]"></i></button>
+                    <button
+                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-brand text-white font-medium shadow-md text-[14px]">1</button>
+                    <button
+                        class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 hover:text-brand text-gray-600 font-medium transition text-[14px]">2</button>
+                    <button
+                        class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 font-medium transition"><i
+                            class="fas fa-chevron-right text-[12px]"></i></button>
+                </div>
+
+                <!-- TAB CONTENT eGift -->
+                <div x-show="currentSortTab === 'eGift'" x-cloak x-transition>
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-between p-8 bg-gradient-to-r from-pink-50 to-pink-100/50 rounded-3xl border border-pink-100 mb-8 overflow-hidden relative">
+                        <div class="absolute -right-20 -top-20 opacity-20"><i
+                                class="fas fa-gift text-[200px] text-pink-300"></i></div>
+                        <div class="relative z-10 max-w-lg">
+                            <h3 class="font-bold text-3xl text-gray-900 mb-3 drop-shadow-sm">Trung tâm E-Gift Quà Tặng
+                            </h3>
+                            <p class="text-[15px] text-gray-500 mb-6">Gửi tặng những chiếc Voucher thiết thực được thiết
+                                kế riêng biệt tới bạn bè và người thân chỉ bằng một cú click chuột qua tính năng E-Gift
+                                độc đáo.</p>
+                            <div class="flex gap-4">
+                                <button
+                                    class="bg-pink-500 text-white font-bold py-3 px-8 rounded-xl shadow-md shadow-pink-500/30 hover:bg-pink-600 transition hover:-translate-y-1">Chủ
+                                    Đề Phổ Biến</button>
+                                <button
+                                    class="bg-white text-pink-500 font-bold py-3 px-8 rounded-xl shadow border border-pink-100 hover:bg-pink-50 transition">Sinh
+                                    Nhật</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="font-bold text-xl text-gray-800">Tất cả mẫu e-Gift</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        x-data="{ openGiftModal: false, selectedGift: null }">
+                        <template x-for="(g, idx) in [
+                            {icon: 'fa-birthday-cake', title: 'Set Quà Sinh Nhật Đáng Nhớ', val: '1200 TapCoin', color: 'pink'},
+                            {icon: 'fa-heart', title: 'Anniversary Lãng Mạn', val: '2500 TapCoin', color: 'red'},
+                            {icon: 'fa-glass-cheers', title: 'Chúc Mừng Thăng Chức', val: '500 TapCoin', color: 'blue'},
+                            {icon: 'fa-handshake', title: 'Tri Ân Khách Hàng', val: '800 TapCoin', color: 'orange'},
+                            {icon: 'fa-utensils', title: 'Mời Bạn Bè Ăn Tối', val: '1500 TapCoin', color: 'green'},
+                            {icon: 'fa-coffee', title: 'Ly Coffee Buổi Sáng', val: '150 TapCoin', color: 'brand'},
+                        ]" :key="idx">
+                            <div class="bg-white rounded-[1.2rem] shadow-sm p-5 border-t-8 relative overflow-hidden group hover:-translate-y-1 transition duration-300 hover:shadow-lg"
+                                :class="g.color === 'pink' ? 'border-t-pink-400' : g.color === 'red' ? 'border-t-red-400' : g.color === 'blue' ? 'border-t-blue-400' : g.color === 'green' ? 'border-t-green-400' : g.color === 'brand' ? 'border-t-brand' : 'border-t-orange-400'">
+                                <div class="flex items-center gap-4 mb-5">
+                                    <div class="w-14 h-14 rounded-2xl flex justify-center items-center shadow-inner"
+                                        :class="g.color === 'pink' ? 'bg-pink-100 text-pink-500' : g.color === 'red' ? 'bg-red-100 text-red-500' : g.color === 'blue' ? 'bg-blue-100 text-blue-500' : g.color === 'green' ? 'bg-green-100 text-green-500' : g.color === 'brand' ? 'bg-orange-100 text-brand' : 'bg-orange-50 text-orange-500'">
+                                        <i class="fas text-2xl" :class="g.icon"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-gray-800 text-[15px] leading-tight mb-1"
+                                            x-text="g.title"></p>
+                                        <p class="text-[13px] text-brand font-bold" x-text="g.val"></p>
+                                    </div>
+                                </div>
+                                <button @click="selectedGift = g; openGiftModal = true"
+                                    class="w-full py-2.5 bg-gray-50 text-gray-700 border border-gray-100 font-bold rounded-xl text-[14px] hover:bg-pink-50 hover:text-pink-600 hover:border-pink-200 transition shadow-sm">
+                                    <i class="fas fa-paper-plane mr-1.5"></i> Gửi tặng ngay
+                                </button>
+                            </div>
+                        </template>
+
+                        <!-- GIFT MODAL -->
+                        <div x-show="openGiftModal" x-transition style="display: none;"
+                            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+                            @click.away="openGiftModal = false">
+                            <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-[450px] relative overflow-hidden"
+                                @click.stop>
+                                <div class="bg-gradient-to-r p-6"
+                                    :class="selectedGift?.color === 'pink' ? 'from-pink-500 to-pink-400' : selectedGift?.color === 'red' ? 'from-red-500 to-red-400' : selectedGift?.color === 'blue' ? 'from-blue-500 to-blue-400' : selectedGift?.color === 'green' ? 'from-green-500 to-green-400' : 'from-brand to-orange-400'">
+                                    <button @click="openGiftModal = false"
+                                        class="absolute top-4 right-4 text-white hover:text-gray-200 bg-black/10 w-8 h-8 rounded-full flex items-center justify-center transition"><i
+                                            class="fas fa-times"></i></button>
+                                    <div class="flex flex-col items-center text-white">
+                                        <div class="w-16 h-16 bg-white rounded-full flex justify-center items-center shadow-lg mb-3"
+                                            :class="'text-' + selectedGift?.color + (selectedGift?.color==='brand'?'':'-500')">
+                                            <i class="fas text-2xl" :class="selectedGift?.icon"></i>
+                                        </div>
+                                        <h3 class="font-bold text-xl mb-1 text-center" x-text="selectedGift?.title">
+                                        </h3>
+                                        <p class="font-medium text-white/90 text-[13px]"
+                                            x-text="'Trị giá: ' + selectedGift?.val"></p>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label
+                                                class="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Người
+                                                nhận (Email hoặc SĐT)</label>
+                                            <input type="text"
+                                                class="w-full border-2 border-gray-100 py-3 px-4 rounded-xl font-medium focus:border-brand outline-none transition"
+                                                placeholder="Nhập liên hệ người nhận">
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Lời
+                                                chúc (Tùy chọn)</label>
+                                            <textarea
+                                                class="w-full border-2 border-gray-100 py-3 px-4 rounded-xl font-medium focus:border-brand outline-none transition resize-none"
+                                                rows="3" placeholder="Chúc bạn sinh nhật vui vẻ..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6 border-t border-gray-100 pt-5">
+                                        <button @click="openGiftModal = false; alert('Gửi quà thành công!')"
+                                            class="w-full bg-brand text-white font-bold py-3.5 rounded-xl shadow hover:bg-brand-hover transition text-[15px]">
+                                            Thanh toán & Gửi Quà
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination Buttons -->
+                    <div
+                        class="flex justify-center items-center gap-2 mt-12 bg-white w-max mx-auto p-2 rounded-2xl shadow-sm border border-gray-200">
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 font-medium transition"><i
+                                class="fas fa-chevron-left text-[12px]"></i></button>
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-brand text-white font-medium shadow-md text-[14px]">1</button>
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 hover:text-brand text-gray-600 font-medium transition text-[14px]">2</button>
+                        <button
+                            class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 text-gray-400 font-medium transition"><i
+                                class="fas fa-chevron-right text-[12px]"></i></button>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT scanTab -->
+                <div x-show="currentSortTab === 'scanTab'" x-cloak x-transition>
+                    <div
+                        class="flex flex-col items-center justify-center py-10 bg-white rounded-2xl shadow-sm border border-gray-100">
+                        <img src="https://media.giphy.com/media/xUPGcmNe85ElIbroS4/giphy.gif"
+                            class="w-32 h-32 rounded-full object-cover mb-4 opacity-50" style="filter:grayscale(1)">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Thanh Toán & Quét Tại Chỗ</h3>
+                        <p class="text-sm text-gray-500 mb-6">Mở Camera TAPGO APP để quét mã QR tại bàn (Table QR) của
+                            cửa hàng đối tác để nhận giảm giá bí mật lập tức!</p>
+                        <button
+                            class="bg-gray-900 text-white font-bold py-3 px-8 rounded-xl shadow-md hover:bg-black"><i
+                                class="fas fa-expand mr-2"></i>Mở Camera Scan</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer
+        class="bg-[#111111] text-gray-400 pt-14 pb-8 border-t-[6px] border-brand relative mt-auto overflow-hidden text-[14px]">
+        <div class="absolute inset-0 opacity-[0.03]"
+            style="background-image: repeating-linear-gradient(45deg,#FFF 0,#FFF 1px,transparent 1px,transparent 10px);">
+        </div>
+        <div class="container mx-auto max-w-[1280px] px-4 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10 border-b border-gray-800 pb-12">
+                <div>
+                    <a href="home_website.html" class="inline-block mb-6 transform hover:scale-105 transition duration-300">
+                        <div class="bg-white px-5 py-4 rounded-[1.25rem] shadow-lg flex items-center justify-center">
+                            <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto object-contain">
+                        </div>
+                    </a>
+                    <p class="mb-5 leading-relaxed text-gray-400">Nền tảng e-Voucher ứng dụng Gamification – Săn deal,
+                        tích điểm, thăng hạng thành viên.</p>
+                    <div class="flex gap-2.5">
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-[#1877F2] rounded-lg flex items-center justify-center transition"><i
+                                class="fab fa-facebook-f text-white text-[13px]"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center transition hover:bg-pink-600"><i
+                                class="fab fa-instagram text-white text-[13px]"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-black rounded-lg flex items-center justify-center transition"><i
+                                class="fab fa-tiktok text-white text-[13px]"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-[#FF0000] rounded-lg flex items-center justify-center transition"><i
+                                class="fab fa-youtube text-white text-[13px]"></i></a>
+                        <a href="#"
+                            class="w-9 h-9 bg-white/10 hover:bg-[#0A66C2] rounded-lg flex items-center justify-center transition"><i
+                                class="fab fa-linkedin-in text-white text-[13px]"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-[14px] mb-4 uppercase tracking-wider">Khám phá</h3>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Flash Deals Hôm Nay</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>e-Voucher Nhà Hàng</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Spa &amp; Làm đẹp</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Du lịch &amp; Khách sạn</a>
+                        </li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Vui chơi &amp; Giải trí</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-[14px] mb-4 uppercase tracking-wider">Hỗ trợ</h3>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Trung tâm trợ giúp</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Hướng dẫn sử dụng</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Hotline: 1900 1234</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Đăng ký Vendor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-[14px] mb-4 uppercase tracking-wider">Pháp lý</h3>
+                    <ul class="space-y-2.5 mb-5">
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Điều khoản sử dụng</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Chính sách bảo mật</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Chính sách hoàn tiền</a></li>
+                        <li><a href="#" class="hover:text-brand transition flex items-center gap-2"><i
+                                    class="fas fa-chevron-right text-brand text-[9px]"></i>Quy chế hoạt động</a></li>
+                    </ul>
+                    <h4 class="text-white font-medium text-[12px] mb-2.5">Tải ứng dụng</h4>
+                    <div class="flex flex-col gap-2">
+                        <a href="#"
+                            class="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded-xl px-3 py-2 transition"><i
+                                class="fab fa-apple text-white text-xl"></i>
+                            <div>
+                                <div class="text-[9px] text-gray-400">Tải về trên</div>
+                                <div class="text-white font-medium text-[12px]">App Store</div>
+                            </div>
+                        </a>
+                        <a href="#"
+                            class="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded-xl px-3 py-2 transition"><i
+                                class="fab fa-google-play text-white text-xl"></i>
+                            <div>
+                                <div class="text-[9px] text-gray-400">Tải về trên</div>
+                                <div class="text-white font-medium text-[12px]">Google Play</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 pt-7 text-[12px] text-gray-600">
+                <p>© 2025 <span class="inline-flex items-center bg-white px-2 py-0.5 rounded-md mx-1 shadow-sm translate-y-[1px]"><img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-3.5 w-auto object-contain"></span>. Vận hành bởi <span
+                        class="text-brand font-medium">TAPGO Vietnam JSC</span>. All rights reserved.</p>
+                <div class="flex gap-4"><a href="#" class="hover:text-brand transition">Điều khoản</a><span>·</span><a
+                        href="#" class="hover:text-brand transition">Bảo mật</a><span>·</span><a href="#"
+                        class="hover:text-brand transition">Cookie</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dùng Ngay Modal -->
+    <div x-show="openQr" x-transition style="display: none;"
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        @click.away="openQr = false">
+        <div class="bg-white rounded-[2rem] shadow-2xl w-[340px] text-center relative overflow-hidden flex flex-col items-center"
+            @click.stop>
+            <!-- Orange header -->
+            <div class="h-24 bg-brand absolute top-0 inset-x-0 z-0"></div>
+            <button @click="openQr = false"
+                class="absolute top-4 right-4 text-white hover:text-gray-200 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center transition z-20 backdrop-blur-sm shadow-sm"><i
+                    class="fas fa-times text-sm"></i></button>
+
+            <!-- Brand Avatar -->
+            <div class="relative z-10 pt-6 px-6 flex flex-col items-center w-full">
+                <div
+                    class="w-16 h-16 bg-white rounded-2xl shadow-md border-4 border-white overflow-hidden flex items-center justify-center mb-3">
+                    <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=200"
+                        class="w-full h-full object-cover">
+                </div>
+                <h3 class="font-bold text-[17px] text-white mb-1">Yakimono - Thịt Nướng</h3>
+                <p class="text-[12px] text-white/90 font-medium mb-5">Combo Gia Đình 4 Người</p>
+            </div>
+
+            <!-- Ticket Notches -->
+            <div class="absolute -left-3 top-[108px] w-6 h-6 bg-black/70 rounded-full z-20"
+                style="box-shadow: inset -3px 0px 5px rgba(0,0,0,0.1)"></div>
+            <div class="absolute -right-3 top-[108px] w-6 h-6 bg-black/70 rounded-full z-20"
+                style="box-shadow: inset 3px 0 5px rgba(0,0,0,0.1)"></div>
+
+            <!-- Ticket body -->
+            <div class="bg-white relative z-10 px-8 pb-8 pt-6 w-full border-t-[2px] border-dashed border-gray-200 mt-2">
+                <p class="text-[12px] text-gray-500 mb-4 font-bold uppercase tracking-wider">Đưa mã QR cho thu ngân</p>
+                <div
+                    class="bg-gray-50 p-4 rounded-2xl mb-5 pb-5 border border-brand/20 w-fit mx-auto shadow-inner group">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=TAPGO12345"
+                        class="w-[180px] h-[180px] mx-auto mix-blend-multiply group-hover:scale-105 transition duration-500">
+                </div>
+                <p class="text-3xl font-bold tracking-[0.2em] text-gray-900 mb-5 font-mono drop-shadow-sm">TPG-X8A2M</p>
+                <div
+                    class="flex items-center justify-center gap-2 text-danger bg-red-50 py-3 rounded-xl font-bold text-[14px] w-full border border-red-100 shadow-sm animate-pulse">
+                    <i class="fas fa-clock text-lg"></i> Hết hạn sau: 01:59:59
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
