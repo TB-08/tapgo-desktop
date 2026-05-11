@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng - TAPGO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Be Vietnam Pro', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    <script src="data.js"></script>
+    <style>
+        body {
+            background-color: #FAFAFA !important;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 200, 100, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 100, 50, 0.1) 0px, transparent 50%) !important;
+            background-attachment: fixed !important;
+        }
+
+        .text-brand {
+            color: #F48133;
+        }
+
+        .bg-brand {
+            background-color: #F48133;
+        }
+
+        .bg-brand-hover {
+            background-color: #e06c20;
+        }
+
+        .border-brand {
+            border-color: #F48133;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body x-data="getTapgoData()" class="text-gray-900 antialiased font-sans flex flex-col min-h-screen">
+
+    <!-- HEADER MINIMAL -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
+        <div class="container mx-auto max-w-[1280px] px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <a href="home_website.html">
+                    <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto object-contain">
+                </a>
+                <span class="text-xl font-medium text-gray-800 border-l-2 border-gray-200 pl-6">Giỏ hàng</span>
+            </div>
+
+
+        </div>
+    </header>
+
+    <!-- CART CONTENT -->
+    <main class="flex-1 container mx-auto max-w-[1280px] px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Items -->
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Select all box -->
+                <div
+                    class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" checked class="w-5 h-5 accent-brand rounded border-gray-300">
+                        <span class="font-bold text-gray-800">Chọn tất cả (2 voucher)</span>
+                    </label>
+                    <button class="text-gray-400 hover:text-danger font-medium text-sm transition"><i
+                            class="fas fa-trash-alt mr-1"></i> Xóa</button>
+                </div>
+
+                <!-- Item 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 flex gap-6 items-center">
+                    <input type="checkbox" checked class="w-5 h-5 accent-brand rounded border-gray-300">
+                    <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=200"
+                        class="w-24 h-24 object-cover rounded-xl border border-gray-100 shrink-0">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-900 text-lg mb-1">Combo Thịt Nướng Nhật Bản Bao Gồm Lẩu 4 Người
+                            VIP</h3>
+                        <p class="text-gray-500 text-sm mb-3">Yakimono Thăng Long</p>
+                        <span class="bg-orange-50 text-brand text-xs font-bold px-2 py-1 rounded">E-Voucher</span>
+                    </div>
+                    <div class="text-right flex flex-col items-end gap-3">
+                        <div>
+                            <p class="text-gray-400 line-through text-sm">2,990 VND</p>
+                            <p class="text-brand font-bold text-xl"><i
+                                    class="fas fa-coins text-yellow-500 mr-1 text-[16px]"></i>1,500</p>
+                        </div>
+                        <div class="flex items-center border border-gray-200 rounded-lg bg-gray-50 overflow-hidden">
+                            <button class="px-3 py-1 hover:bg-gray-200 text-gray-500 font-bold transition">-</button>
+                            <input type="text" value="1"
+                                class="w-10 text-center bg-transparent border-none outline-none font-bold text-sm">
+                            <button class="px-3 py-1 hover:bg-gray-200 text-gray-500 font-bold transition">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div
+                    class="bg-white p-6 rounded-2xl border border-gray-100 flex gap-6 items-center opacity-60 hover:opacity-100 transition">
+                    <input type="checkbox" class="w-5 h-5 accent-brand rounded border-gray-300">
+                    <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=200"
+                        class="w-24 h-24 object-cover rounded-xl border border-gray-100 shrink-0">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-900 text-lg mb-1">Vé xem phim 2D tất cả các cụm rạp CGV</h3>
+                        <p class="text-gray-500 text-sm mb-3">CGV Toàn Quốc</p>
+                        <span class="bg-orange-50 text-brand text-xs font-bold px-2 py-1 rounded">E-Voucher</span>
+                    </div>
+                    <div class="text-right flex flex-col items-end gap-3">
+                        <div>
+                            <p class="text-gray-400 line-through text-sm">130,000 VND</p>
+                            <p class="text-brand font-bold text-xl"><i
+                                    class="fas fa-coins text-yellow-500 mr-1 text-[16px]"></i>300</p>
+                        </div>
+                        <div class="flex items-center border border-gray-200 rounded-lg bg-gray-50 overflow-hidden">
+                            <button class="px-3 py-1 hover:bg-gray-200 text-gray-500 font-bold transition">-</button>
+                            <input type="text" value="2"
+                                class="w-10 text-center bg-transparent border-none outline-none font-bold text-sm">
+                            <button class="px-3 py-1 hover:bg-gray-200 text-gray-500 font-bold transition">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Summary -->
+            <div class="lg:col-span-4">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 sticky top-28">
+                    <h3 class="font-bold text-lg text-gray-900 mb-5 border-b border-gray-100 pb-3">Tóm tắt đơn hàng</h3>
+
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-600">Tổng phụ (1 sản phẩm)</span>
+                        <span class="font-bold text-gray-800"><i
+                                class="fas fa-coins text-yellow-500 mr-1 text-sm"></i>1,500</span>
+                    </div>
+
+                    <div
+                        class="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-200 relative overflow-hidden group hover:border-brand transition">
+                        <div class="flex justify-between items-center relative z-10">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-ticket text-brand text-xl"></i>
+                                <span class="font-bold text-gray-700 text-sm">TapGo Voucher</span>
+                            </div>
+                            <button class="text-brand text-sm font-bold hover:underline">Chọn mã <i
+                                    class="fas fa-chevron-right ml-1 text-[10px]"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-8 border-t border-gray-100 pt-4">
+                        <span class="text-gray-900 font-bold text-lg">Tổng cộng</span>
+                        <span class="font-bold text-brand text-3xl"><i
+                                class="fas fa-coins text-yellow-500 mr-1 text-xl"></i>1,500</span>
+                    </div>
+
+                    <a href="checkout_website.html"
+                        class="block text-center w-full bg-brand hover:bg-brand-hover text-white font-bold text-lg py-4 rounded-xl transition hover:-translate-y-0.5">
+                        <i class="fas fa-lock mr-2"></i>THANH TOÁN NGAY
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
