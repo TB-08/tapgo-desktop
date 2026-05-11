@@ -31,6 +31,15 @@
         .ticket-notch-l { position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background: #F9FAFB; border-radius: 50%; border-right: 1px solid #F3F4F6; z-index: 20; }
         .ticket-notch-r { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; background: #F9FAFB; border-radius: 50%; border-left: 1px solid #F3F4F6; z-index: 20; }
     </style>
+
+    <!-- Lenis Smooth Scroll CSS -->
+    <style>
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+        .lenis.lenis-scrolling iframe { pointer-events: none; }
+    </style>
 </head>
 
 <body class="text-gray-900 antialiased">
@@ -214,6 +223,17 @@
         </div>
     </main>
 
+
+    <!-- Lenis Smooth Scroll JS -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
 </body>
 
 </html>
