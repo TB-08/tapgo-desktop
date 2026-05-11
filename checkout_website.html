@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - TAPGO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Be Vietnam Pro', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    <script src="data.js"></script>
+    <style>
+        body {
+            background-color: #FAFAFA !important;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 200, 100, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(244, 129, 51, 0.25) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 100, 50, 0.1) 0px, transparent 50%) !important;
+            background-attachment: fixed !important;
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+        }
+
+        .text-brand {
+            color: #F48133;
+        }
+
+        .bg-brand {
+            background-color: #F48133;
+        }
+
+        .border-brand {
+            border-color: #F48133;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body x-data="{ ...getTapgoData(), step: 1, paymentMethod: 'tapcoin', qty: 1 }"
+    class="text-gray-900 antialiased font-sans flex flex-col min-h-screen bg-gray-50">
+
+    <!-- HEADER MINIMAL -->
+    <header class="bg-white sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto max-w-[1200px] px-4 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <a href="home_website.html">
+                    <img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-16 w-auto object-contain">
+                </a>
+                <span class="text-xl font-medium text-gray-800 border-l border-gray-300 pl-6 hidden sm:block">Thanh
+                    Toán</span>
+            </div>
+            <div class="hidden md:flex text-gray-500 text-sm gap-2 mt-1">
+                <i class="fas fa-lock text-brand mt-0.5"></i> Mọi giao dịch đều được mã hoá bảo mật 256-bit
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="flex-1 container mx-auto max-w-[1200px] px-4 py-8" x-show="step === 1" x-transition.opacity>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- LEFT COLUMN (Info, Cart, Payment) -->
+            <div class="lg:col-span-8 space-y-5">
+
+                <!-- Address / User Info Block -->
+                <div class="bg-white p-6 md:p-8 rounded-[1.5rem] border border-gray-200">
+                    <div class="flex items-center gap-2 text-brand font-bold text-lg mb-5">
+                        <i class="fas fa-map-marker-alt"></i> Thông Tin Nhận E-Voucher
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-700 block mb-1">Họ và Tên</label>
+                            <input type="text" value="Lê Anh Tú"
+                                class="w-full border border-gray-300 px-4 py-2.5 rounded-2xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition text-sm">
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-700 block mb-1">Số Điện Thoại</label>
+                            <input type="text" value="0988 123 456"
+                                class="w-full border border-gray-300 px-4 py-2.5 rounded-2xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="text-sm font-medium text-gray-700 block mb-1">Email <span
+                                    class="text-gray-400 font-normal">(E-Voucher sẽ gửi về mail này)</span></label>
+                            <input type="email" value="anhtu.le@gmail.com"
+                                class="w-full border border-gray-300 px-4 py-2.5 rounded-2xl focus:border-brand focus:ring-1 focus:ring-brand outline-none transition text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Block -->
+                <div class="bg-white rounded-[1.5rem] border border-gray-200 overflow-hidden">
+                    <div class="p-6 md:p-8">
+                        <h3 class="font-bold text-lg text-gray-800 mb-5">Khớp E-Voucher</h3>
+
+                        <div
+                            class="hidden md:flex items-center text-sm text-gray-500 font-medium pb-3 border-b border-gray-200 gap-4">
+                            <div class="w-1/2">Chi tiết Voucher</div>
+                            <div class="w-1/6 text-center">Đơn giá</div>
+                            <div class="w-1/6 text-center">Số lượng</div>
+                            <div class="w-1/6 text-right">Thành tiền</div>
+                        </div>
+
+                        <div class="py-5 flex flex-col md:flex-row items-start md:items-center gap-4">
+                            <!-- Detail -->
+                            <div class="w-full md:w-1/2 flex gap-4">
+                                <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=200"
+                                    class="w-20 h-20 object-cover rounded border border-gray-200">
+                                <div class="flex-1">
+                                    <span
+                                        class="bg-brand text-white text-[10px] uppercase font-bold px-1.5 py-0.5 mb-1 inline-block">E-Voucher</span>
+                                    <h4
+                                        class="font-medium text-gray-800 text-[15px] leading-tight mb-1 truncate-2-lines">
+                                        Combo Thịt Nướng Nhật Bản Bao Gồm Lẩu VIP</h4>
+                                    <p class="text-xs text-gray-500"><i class="fas fa-store text-gray-400"></i> Yakimono
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Price mobile hidden -->
+                            <div class="hidden md:block w-1/6 text-center text-gray-600 font-medium">1,500 <i
+                                    class="fas fa-coins text-yellow-500 text-[10px]"></i></div>
+                            <!-- Qty -->
+                            <div class="w-full md:w-1/6 flex justify-between md:justify-center items-center">
+                                <span class="md:hidden text-sm font-medium text-gray-500">Số lượng:</span>
+                                <div class="flex items-center border border-gray-300 rounded-2xl">
+                                    <button
+                                        class="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                                        @click="qty = Math.max(1, qty-1)">-</button>
+                                    <span class="w-10 text-center text-sm font-medium border-x border-gray-300 py-1"
+                                        x-text="qty"></span>
+                                    <button
+                                        class="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                                        @click="qty++">+</button>
+                                </div>
+                            </div>
+                            <!-- Total -->
+                            <div
+                                class="w-full md:w-1/6 flex justify-between md:justify-end items-center mt-3 md:mt-0 border-t md:border-t-0 border-gray-100 pt-3 md:pt-0">
+                                <span class="md:hidden text-sm font-medium text-gray-500">Thành tiền:</span>
+                                <div class="text-brand font-bold text-lg"><span x-text="1500 * qty"></span> <i
+                                        class="fas fa-coins text-yellow-500 text-[12px]"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 px-6 md:px-8 py-4 border-t border-gray-200 text-sm flex gap-3 text-gray-600">
+                        <i class="fas fa-envelope-open-text text-brand mt-0.5"></i>
+                        <span>Voucher sẽ được lưu vào <strong class="text-gray-800">Ví Voucher của tôi</strong> và hỗ
+                            trợ quét mã QR tại bàn (Scan Tab).</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="bg-white p-6 md:p-8 rounded-[1.5rem] border border-gray-200">
+                    <h3 class="font-bold text-lg text-gray-800 mb-5">Phương Thức Thanh Toán</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <label
+                            class="flex flex-col p-4 border rounded-2xl cursor-pointer transition relative"
+                            :class="paymentMethod === 'tapcoin' ? 'border-brand bg-orange-50' : 'border-gray-300'">
+                            <div class="flex items-center gap-2 mb-2">
+                                <input type="radio" value="tapcoin" x-model="paymentMethod"
+                                    class="w-4 h-4 accent-brand cursor-pointer">
+                                <span class="font-bold text-gray-800 text-sm">Ví TapCoin</span>
+                            </div>
+                            <div class="pl-6 text-xs text-brand font-bold">Số dư: 8,500 <i
+                                    class="fas fa-coins text-yellow-500 text-[10px]"></i></div>
+                            <i class="fas fa-coins absolute right-3 bottom-3 text-3xl text-gray-200"
+                                :class="paymentMethod === 'tapcoin' ? 'text-yellow-300' : ''"></i>
+                        </label>
+
+                        <label
+                            class="flex flex-col p-4 border rounded-2xl cursor-pointer transition relative"
+                            :class="paymentMethod === 'momo' ? 'border-brand bg-orange-50' : 'border-gray-300'">
+                            <div class="flex items-center gap-2 mb-2">
+                                <input type="radio" value="momo" x-model="paymentMethod"
+                                    class="w-4 h-4 accent-brand cursor-pointer">
+                                <span class="font-bold text-gray-800 text-sm">Ví MoMo</span>
+                            </div>
+                            <div class="pl-6 text-xs text-gray-500">Mở app MoMo</div>
+                            <img src="https://developers.momo.vn/v3/assets/images/MOMO-Logo-App-6262c3743a290ef02396a24ea2b66c35.png"
+                                class="w-8 h-8 absolute right-3 bottom-3 opacity-60"
+                                :class="paymentMethod === 'momo' ? 'opacity-100' : ''">
+                        </label>
+
+                        <label
+                            class="flex flex-col p-4 border rounded-2xl cursor-pointer transition relative"
+                            :class="paymentMethod === 'zalo' ? 'border-brand bg-orange-50' : 'border-gray-300'">
+                            <div class="flex items-center gap-2 mb-2">
+                                <input type="radio" value="zalo" x-model="paymentMethod"
+                                    class="w-4 h-4 accent-brand cursor-pointer">
+                                <span class="font-bold text-gray-800 text-sm">Ví ZaloPay</span>
+                            </div>
+                            <div class="pl-6 text-xs text-gray-500">Mở app ZaloPay</div>
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwPynD27LbXlPsbofv1AX-5ZXDn_XMGo-1TA&s"
+                                class="w-8 h-8 absolute right-3 bottom-3 opacity-60 mix-blend-multiply"
+                                :class="paymentMethod === 'zalo' ? 'opacity-100' : ''">
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN (Summary & Apply Promo) -->
+            <div class="lg:col-span-4">
+                <div class="bg-white p-6 rounded-[1.5rem] border border-gray-200 sticky top-24">
+
+                    <h3 class="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-200">Mã Giảm Giá</h3>
+
+                    <!-- Fixed "Áp dụng" Button overflow layout here -->
+                    <div class="flex flex-col sm:flex-row gap-2 mb-6">
+                        <input type="text" placeholder="Mã giảm giá TapGo"
+                            class="flex-1 w-full border border-gray-300 py-2.5 px-3 rounded-2xl font-medium focus:border-brand outline-none text-sm bg-white transition uppercase text-gray-900">
+                        <button
+                            class="bg-gray-800 text-white font-bold px-4 py-2.5 rounded-2xl hover:bg-black transition text-sm sm:w-auto w-full flex-shrink-0">Áp
+                            dụng</button>
+                    </div>
+
+                    <h3 class="font-bold text-lg text-gray-800 mb-4 pb-2 border-b border-gray-200 mt-6">Tổng Kết Giao Dịch</h3>
+
+                    <div class="space-y-3 mb-6 pb-6 border-b border-gray-200 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Tổng tiền (<span x-text="qty"></span> voucher)</span>
+                            <span class="font-medium text-gray-800"><span x-text="1500 * qty"></span> <i
+                                    class="fas fa-coins text-yellow-500 text-[10px]"></i></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Giảm giá</span>
+                            <span class="text-gray-800">- 0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-gray-800 font-medium">Tổng thanh toán</span>
+                        <div class="text-right">
+                            <div class="text-brand font-bold text-2xl"><span x-text="1500 * qty"></span> <i
+                                    class="fas fa-coins text-yellow-500 text-lg"></i></div>
+                        </div>
+                    </div>
+
+                    <button @click="step = 2; window.scrollTo({top: 0, behavior: 'instant'});"
+                        class="w-full bg-brand hover:bg-brand-hover text-white font-bold text-[16px] py-3.5 rounded-2xl transition">
+                        Xác Nhận Đổi Voucher
+                    </button>
+
+                    <p class="text-xs text-gray-400 text-center mt-4">
+                        Bằng việc nhấn Xác Nhận Đổi Voucher, bạn đồng ý với <a href="#" class="text-brand hover:underline">Điều
+                            khoản Dịch vụ</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- STEP 2 SUCCESS -->
+    <div class="flex items-center justify-center py-10 md:py-20 flex-1" x-show="step === 2" x-cloak>
+        <div class="bg-white rounded-[1.5rem] border border-gray-200 max-w-[600px] w-full p-8 md:p-12 text-center">
+
+            <i class="fas fa-check-circle text-6xl text-green-500 mb-6"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-3">Thanh Toán Hoàn Tất</h2>
+            <p class="text-gray-500 text-sm mb-6">Mã E-Voucher đã được kích hoạt thành công vào Ví của bạn.</p>
+
+            <div
+                class="bg-gray-50 border border-gray-200 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 mb-8 text-left justify-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TAPGO_SUCCESS_EVOUCHER_77B5X&color=F48133"
+                    class="w-28 h-28 p-2 bg-white border border-gray-300">
+                <div>
+                    <span class="text-gray-500 text-xs font-bold uppercase tracking-wider block mb-1">Mã Bảo Mật</span>
+                    <p class="text-2xl font-mono font-bold text-gray-900 mb-2">77B5-X9QR</p>
+                    <p class="text-sm text-gray-600">Sử dụng đến: <strong class="text-gray-800">31/12/2026</strong></p>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <a href="category_website.html"
+                    class="bg-brand text-white font-bold py-3.5 px-12 rounded-2xl hover:bg-brand-hover transition shadow-lg shadow-brand/20">
+                    Tiếp Tục Mua Sắm
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-gray-200 text-center py-6 mt-auto">
+        <p class="text-xs text-gray-500">© 2026 <span class="inline-flex items-center bg-white px-2 py-0.5 rounded-md mx-1 translate-y-[1px]"><img src="Tap Go-Photoroom.png" alt="TAPGO" class="h-3.5 w-auto object-contain"></span> Vietnam JSC. Mọi giao dịch được đảm bảo an toàn.</p>
+    </footer>
+
+</body>
+
+</html>
