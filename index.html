@@ -850,6 +850,64 @@
                 </template>
             </div>
         </section>
+
+        <!-- VOUCHER MIỄN PHÍ (MỚI) -->
+        <section class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-6 md:p-8 border border-emerald-100/50 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-200/20 blur-[100px] rounded-full"></div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4 mb-8 relative z-10">
+                <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
+                    <i class="fas fa-gift text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-[24px] font-bold text-emerald-900 tracking-tight">VOUCHER MIỄN PHÍ</h2>
+                    <p class="text-emerald-600 text-sm font-medium">Lấy ngay không cần tích điểm TapCoin</p>
+                </div>
+                <a href="category_website.html" class="md:ml-auto text-emerald-700 font-bold text-[13px] uppercase hover:underline flex items-center gap-2 bg-white/50 px-4 py-2 rounded-xl">Xem tất cả <i class="fas fa-chevron-right text-[10px]"></i></a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 relative z-10">
+                <template x-for="(v, vi) in vouchersFree">
+                    <a href="product_detail.html" class="ticket-card bg-white rounded-2xl flex flex-col relative border border-emerald-100 group hover:shadow-xl hover:shadow-emerald-200/40 transition-all duration-500 overflow-visible">
+                        <!-- Free Badge -->
+                        <div class="absolute top-2 right-2 z-10">
+                            <span class="bg-emerald-500 text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm border border-emerald-400">Miễn phí</span>
+                        </div>
+
+                        <!-- Image Area -->
+                        <div class="relative rounded-t-2xl overflow-hidden aspect-[16/10] bg-gray-50">
+                            <img :src="v.img" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/20 to-transparent"></div>
+                        </div>
+
+                        <!-- Brand logo floating -->
+                        <div class="relative h-0">
+                            <div class="absolute -top-4 left-3 w-8 h-8 bg-white rounded-xl flex items-center justify-center p-0.5 z-10 border border-emerald-50 shadow-sm">
+                                <img :src="v.logo" class="w-full h-full object-contain rounded-lg">
+                            </div>
+                        </div>
+
+                        <!-- Ticket Divider -->
+                        <div class="mx-3 mt-5 border-t border-dashed border-emerald-100"></div>
+
+                        <!-- Content -->
+                        <div class="px-3 md:px-4 py-3 flex-1 flex flex-col">
+                            <span class="text-[9px] text-emerald-600 font-bold truncate uppercase tracking-widest" x-text="v.brand"></span>
+                            <h3 class="font-bold text-[13px] md:text-[14px] text-gray-900 leading-snug my-1 truncate-2-lines group-hover:text-emerald-600 transition" x-text="v.title"></h3>
+                            <div class="flex items-center gap-1 mb-3 text-gray-500">
+                                <i class="fas fa-star text-yellow-400 text-[9px]"></i>
+                                <span class="text-[10px] md:text-[11px] font-bold text-gray-700" x-text="v.rating"></span>
+                                <span class="text-emerald-300 text-[18px] leading-[0] -mt-1">&middot;</span>
+                                <span class="text-[9px] md:text-[10px] text-emerald-600 font-medium" x-text="v.reviews"></span>
+                            </div>
+                            <div class="mt-auto">
+                                <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-[11px] py-3 rounded-xl transition shadow-lg shadow-emerald-200 active:scale-95">LẤY VOUCHER NGAY</button>
+                            </div>
+                        </div>
+                    </a>
+                </template>
+            </div>
+        </section>
+
     </main>
 
     <!-- THÀNH TỰU (MỚI: IMPRESSIVE ECOSYSTEM) -->
