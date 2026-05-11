@@ -61,6 +61,12 @@ const getTapgoData = () => {
             { brand: 'Lotte Cinema', logo: 'https://cdn.dealtoday.vn/img/s150x150/lotte-cinema-Logo_13112023171611.jpg?sign=dgb-aeD0hxDUwvwtDP818g', img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600', title: 'Vé xem phim tại Hệ thống Lotte Cinema', loc: 'Toàn quốc', originalPrice: '105.000đ', salePrice: '89.000đ', discount: '15%', rating: 4.8, reviews: '541 đánh giá' },
             { brand: 'Highlands Coffee', logo: 'https://www.highlandscoffee.com.vn/vnt_upload/weblink/red_BG_logo800.png', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600', title: 'Combo 2 ly cà phê Highlands Coffee size L + bánh mình', loc: 'Toàn quốc', originalPrice: '150.000đ', salePrice: '99.000đ', discount: '34%', rating: 4.6, reviews: '3.2k đã bán' }
         ],
+        vouchersFree: [
+            { brand: 'Highlands Coffee', logo: 'https://www.highlandscoffee.com.vn/vnt_upload/weblink/red_BG_logo800.png', img: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600', title: 'E-Coupon Miễn phí 01 ly Phin Sữa Đá khi mua hóa đơn bất kỳ', loc: 'Toàn quốc', isFree: true, rating: 4.9, reviews: '12k đã lấy' },
+            { brand: 'The Coffee House', logo: 'https://upload.wikimedia.org/wikipedia/vi/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1280px-Starbucks_Corporation_Logo_2011.svg.png', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600', title: 'Voucher Miễn phí Topping cho mọi đồ uống size L', loc: 'Toàn quốc', isFree: true, rating: 4.7, reviews: '8.5k đã lấy' },
+            { brand: 'Yakimono', logo: 'https://cdn.dealtoday.vn/img/s150x150/cgv_13032026142551.jpg?sign=9jYod5UnyYijJYC3ZBfNfw', img: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=400', title: 'Voucher tặng 01 đĩa Thịt Bò Mỹ khi đi nhóm 4 người', loc: 'Toàn quốc', isFree: true, rating: 4.8, reviews: '3k đã lấy' }
+        ],
+
         brands: [
             'https://www.highlandscoffee.com.vn/vnt_upload/weblink/red_BG_logo800.png',
             'https://upload.wikimedia.org/wikipedia/vi/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1280px-Starbucks_Corporation_Logo_2011.svg.png',
